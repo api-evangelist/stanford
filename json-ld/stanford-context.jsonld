@@ -1,0 +1,63 @@
+{
+  "@context": {
+    "@vocab": "https://schema.org/",
+    "stanford": "https://www.stanford.edu/ns#",
+    "schema": "https://schema.org/",
+    "name": "schema:name",
+    "url": "schema:url",
+    "description": "schema:description",
+    "logo": "schema:logo",
+    "sameAs": "schema:sameAs",
+    "address": "schema:address",
+    "CollegeOrUniversity": "schema:CollegeOrUniversity",
+
+    "api": "stanford:api",
+    "apiName": "schema:name",
+    "documentation": "schema:url",
+    "baseURL": "stanford:baseURL",
+
+    "library": "stanford:library",
+    "libraryId": "stanford:libraryId",
+    "primaryLocation": "stanford:primaryLocation",
+    "hours": {
+      "@id": "schema:openingHoursSpecification",
+      "@container": "@set"
+    },
+    "day": "stanford:day",
+    "weekday": "schema:dayOfWeek",
+    "opensAt": "schema:opens",
+    "closesAt": "schema:closes",
+    "closed": "stanford:closed",
+
+    "manifest": "stanford:iiifManifest",
+    "purl": "stanford:persistentUrl",
+    "metadata": "stanford:metadata",
+
+    "course": "stanford:course",
+    "courseCatalog": {
+      "@id": "schema:hasCourse",
+      "@container": "@set"
+    },
+
+    "profile": "stanford:profile",
+    "person": "schema:Person"
+  },
+  "@type": "CollegeOrUniversity",
+  "@id": "https://www.stanford.edu/",
+  "name": "Stanford University",
+  "url": "https://www.stanford.edu/",
+  "description": "Private research university in Stanford, California with a multi-pronged developer footprint spanning University IT (UIT) MaIS Registry APIs, an AI API Gateway, Stanford Libraries (DLSS) IIIF/PURL/Hours APIs backing the Stanford Digital Repository, the Registrar's ExploreCourses course-data interface, and the CAP / Stanford Profiles directory.",
+  "logo": "https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg",
+  "sameAs": [
+    "https://twitter.com/Stanford",
+    "https://www.linkedin.com/school/stanford-university/",
+    "https://github.com/sul-dlss",
+    "https://github.com/SU-SWS"
+  ],
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Stanford",
+    "addressRegion": "CA",
+    "addressCountry": "US"
+  }
+}
