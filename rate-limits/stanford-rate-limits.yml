@@ -1,0 +1,35 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Stanford University
+providerId: stanford
+created: '2026-06-03'
+modified: '2026-06-03'
+reconciled: false
+tags:
+- Education
+- Higher Education
+- University
+- Rate Limiting
+description: >-
+  Stanford University does not publish a unified public rate-limit table across its APIs. Open
+  metadata and harvesting endpoints (OAI-PMH, IIIF, library) may throttle large-scale
+  or automated harvesting; clients should harvest politely, honor Retry-After, and
+  contact the relevant service for bulk access.
+notes: Confirm per-service limits with each API's documentation; harvest responsibly.
+sources:
+- https://raw.githubusercontent.com/api-evangelist/stanford/refs/heads/main/apis.yml
+responseCodes:
+  throttled: 429
+limits:
+- name: Default
+  scope: client
+  metric: requests-per-minute
+  limit: see service documentation
+  notes: No published global limit; large harvests may be rate-limited.
+policies:
+- name: Backoff Strategy
+  description: Exponential backoff with jitter; honor Retry-After; harvest during off-peak hours.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

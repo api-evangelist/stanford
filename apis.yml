@@ -1,0 +1,156 @@
+aid: stanford
+name: Stanford University
+description: >-
+  Stanford University is a private research university in Stanford, California
+  (QS World 2025 #6) with a substantial, multi-pronged developer footprint.
+  University IT (UIT) runs a developer hub at uit.stanford.edu/developers
+  exposing certificate-secured MaIS Registry REST APIs (Account, Person,
+  Student, CourseClass, Privilege, Workgroup) plus an AI API Gateway. Stanford
+  Libraries (DLSS) publishes a public API documentation site at
+  api.library.stanford.edu (IIIF, PURL, Embed, Digital Stacks, Library Hours)
+  backing the Stanford Digital Repository, and the Registrar's ExploreCourses
+  offers a course-data XML query interface.
+type: Index
+position: Consumer
+access: 3rd-Party
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+url: https://raw.githubusercontent.com/api-evangelist/stanford/refs/heads/main/apis.yml
+tags:
+  - Education
+  - Higher Education
+  - University
+  - Research
+  - Library
+  - Digital Repository
+  - IIIF
+  - Courses
+created: '2026-06-03'
+modified: '2026-06-03'
+specificationVersion: '0.19'
+apis:
+  - aid: stanford:library-iiif
+    name: Stanford Libraries IIIF API
+    description: >-
+      IIIF Presentation (v2 stable, v3 alpha) and Image v2 APIs for digital
+      image interoperability across the Stanford Digital Repository.
+      Presentation manifests served from purl.stanford.edu; image tiles from
+      stacks.stanford.edu. Public and open.
+    humanURL: https://api.library.stanford.edu/docs/iiif/api/
+    baseURL: https://purl.stanford.edu
+    tags:
+      - Library
+      - IIIF
+      - Digital Repository
+      - Images
+    properties:
+      - type: Documentation
+        url: https://api.library.stanford.edu/docs/iiif/api/
+  - aid: stanford:library-purl
+    name: Stanford Libraries PURL API
+    description: >-
+      Persistent URLs to Stanford Digital Repository (SDR) content. GET /{id}
+      returns HTML; /{id}.xml returns public XML metadata; /{id}.mods returns
+      MODS XML. Public and open.
+    humanURL: https://api.library.stanford.edu/docs/purl/api/
+    baseURL: https://purl.stanford.edu
+    tags:
+      - Library
+      - Persistent Identifiers
+      - Metadata
+      - Digital Repository
+    properties:
+      - type: Documentation
+        url: https://api.library.stanford.edu/docs/purl/api/
+  - aid: stanford:library-hours
+    name: Stanford Libraries Library Hours API
+    description: >-
+      Public API returning operating hours for Stanford library locations.
+    humanURL: https://api.library.stanford.edu/docs/library-hours/api/
+    baseURL: https://api.library.stanford.edu
+    tags:
+      - Library
+      - Hours
+    properties:
+      - type: Documentation
+        url: https://api.library.stanford.edu/docs/library-hours/api/
+  - aid: stanford:explorecourses
+    name: ExploreCourses Course Data API
+    description: >-
+      Programmatic XML query of the Registrar's course catalog (13,000+
+      courses) via explorecourses.stanford.edu/search?view=xml-20140630.
+      Community Python and R client libraries exist; no formal public
+      reference docs (Registrar's Office is the official contact).
+    humanURL: https://explorecourses.stanford.edu/about
+    baseURL: https://explorecourses.stanford.edu/search
+    tags:
+      - Courses
+      - Course Catalog
+      - XML
+    properties:
+      - type: Documentation
+        url: https://explorecourses.stanford.edu/about
+      - type: GitHub
+        url: https://github.com/jeremyephron/explore-courses-api
+  - aid: stanford:cap-profiles
+    name: CAP / Stanford Profiles API
+    description: >-
+      API over the Community Academic Profiles directory (18,000+ faculty,
+      students, postdocs, and staff profiles). Interactive console available;
+      access requires credentials issued via HelpSU.
+    humanURL: https://profiles.sites.stanford.edu/developers
+    baseURL: https://cap.stanford.edu/cap-api
+    tags:
+      - Academic Profiles
+      - Directory
+      - Identity
+    properties:
+      - type: Documentation
+        url: https://profiles-info.stanford.edu/
+      - type: GitHub
+        url: https://github.com/SU-SWS/cap-api
+  - aid: stanford:mais-registry
+    name: MaIS Registry APIs
+    description: >-
+      University IT MaIS Registry REST APIs — Account, Person, Student,
+      CourseClass, Privilege, and Workgroup — documented publicly but gated:
+      access requires an x509 client certificate signed by the MaIS team. No
+      public base URLs or sandbox.
+    humanURL: https://uit.stanford.edu/developers/apis
+    tags:
+      - Identity
+      - Students
+      - Registry
+      - Administrative
+    properties:
+      - type: Documentation
+        url: https://uit.stanford.edu/developers/apis
+      - type: SignUp
+        url: https://uit.stanford.edu/developers
+common:
+  - type: Website
+    url: https://www.stanford.edu/
+  - type: DeveloperPortal
+    url: https://uit.stanford.edu/developers
+  - type: DeveloperPortal
+    url: https://api.library.stanford.edu/
+  - type: GitHub
+    url: https://github.com/sul-dlss
+  - type: GitHub
+    url: https://github.com/SU-SWS
+  - type: Authentication
+    url: https://login.stanford.edu/
+  - type: Twitter
+    url: https://twitter.com/Stanford
+  - type: LinkedIn
+    url: https://www.linkedin.com/school/stanford-university/
+  - type: Plans
+    url: plans/stanford-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/stanford-rate-limits.yml
+  - type: FinOps
+    url: finops/stanford-finops.yml
+  - type: Review
+    url: review.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

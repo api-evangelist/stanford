@@ -1,0 +1,46 @@
+name: Stanford University
+description: Stanford University public developer/API footprint review for APIs.json cataloging.
+url: https://raw.githubusercontent.com/api-evangelist/stanford/refs/heads/main/review.yml
+created: '2026-06-03'
+modified: '2026-06-03'
+reviews:
+  - date: '2026-06-03'
+    rating: 4
+    summary: >-
+      Stanford has a strong, multi-unit developer footprint. Two live public developer
+      hubs were verified: University IT (uit.stanford.edu/developers) and Stanford
+      Libraries (api.library.stanford.edu). The Libraries publish open, documented APIs —
+      IIIF, PURL, Embed, Digital Stacks, and Library Hours — backing the Stanford Digital
+      Repository (all doc paths use hyphens, e.g. /docs/digital-stacks/api/; underscore
+      variants 404). The Registrar's ExploreCourses exposes a confirmed-live XML query
+      interface (?view=xml-20140630), documented by community SDKs rather than a formal
+      reference. The CAP/Stanford Profiles API and its console are live but credentialed
+      via HelpSU. The MaIS Registry APIs (Account, Person, Student, CourseClass,
+      Privilege, Workgroup) are publicly documented but gated behind an x509 client
+      certificate with no public base URLs. GitHub presence verified at sul-dlss and
+      SU-SWS.
+    endpoints:
+      - url: https://uit.stanford.edu/developers/apis
+        status: 200
+        note: UIT developer hub; MaIS Registry APIs (x509-cert gated).
+      - url: https://api.library.stanford.edu/docs/iiif/api/
+        status: 200
+        note: Stanford Libraries IIIF API docs.
+      - url: https://api.library.stanford.edu/docs/purl/api/
+        status: 200
+        note: PURL API docs.
+      - url: https://api.library.stanford.edu/docs/library-hours/api/
+        status: 200
+        note: Library Hours API docs.
+      - url: https://explorecourses.stanford.edu/search?view=xml-20140630
+        status: 200
+        note: ExploreCourses XML query — confirmed live; community-documented.
+      - url: https://cap.stanford.edu/cap-api/console
+        status: 200
+        note: CAP/Profiles API console; access credentialed via HelpSU.
+      - url: https://github.com/sul-dlss
+        status: 200
+        note: Stanford University Digital Library (DLSS) GitHub org.
+      - url: https://github.com/SUDigitalRepository
+        status: 404
+        note: Does not exist; correct org is github.com/sul-dlss.

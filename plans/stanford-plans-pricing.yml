@@ -1,0 +1,59 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Stanford University
+providerId: stanford
+created: '2026-06-03'
+modified: '2026-06-03'
+reconciled: false
+tags:
+- Education
+- Higher Education
+- University
+- Plans
+description: >-
+  Stanford University is a non-commercial higher-education institution; its APIs are not sold
+  as a commercial product. Public APIs (library, repository, course, and open-metadata
+  interfaces) are offered free of charge, typically for non-commercial use. Most
+  administrative and identity APIs are not openly self-service and require institutional
+  affiliation, credentials, or federation membership rather than a paid plan.
+notes: >-
+  No published per-seat or per-call commercial pricing. "Free / Open" reflects open
+  public endpoints; "Affiliation / Credentialed" reflects access gated by institutional
+  identity rather than payment.
+sources:
+- https://raw.githubusercontent.com/api-evangelist/stanford/refs/heads/main/apis.yml
+plans:
+- id: stanford-free-open
+  name: Free / Open
+  type: free
+  description: Public open APIs (metadata, library, repository, course data) offered at no charge, generally for non-commercial use.
+  entries:
+  - label: Open API Access
+    name: open_api_access
+    type: free
+    metric: requests
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1
+    price: '0.00'
+    userMultiplied: false
+- id: stanford-affiliation
+  name: Affiliation / Credentialed
+  type: free
+  description: Administrative and identity APIs gated behind institutional SSO, client certificates, or federation membership rather than payment.
+  entries:
+  - label: Credentialed Access
+    name: credentialed_access
+    type: free
+    metric: requests
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1
+    price: '0.00'
+    userMultiplied: false
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
