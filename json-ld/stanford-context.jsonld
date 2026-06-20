@@ -47,7 +47,7 @@
   "name": "Stanford University",
   "url": "https://www.stanford.edu/",
   "description": "Private research university in Stanford, California with a multi-pronged developer footprint spanning University IT (UIT) MaIS Registry APIs, an AI API Gateway, Stanford Libraries (DLSS) IIIF/PURL/Hours APIs backing the Stanford Digital Repository, the Registrar's ExploreCourses course-data interface, and the CAP / Stanford Profiles directory.",
-  "logo": "https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg",
+  "logo": "https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg",
   "sameAs": [
     "https://twitter.com/Stanford",
     "https://www.linkedin.com/school/stanford-university/",
