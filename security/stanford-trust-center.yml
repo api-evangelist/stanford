@@ -1,0 +1,13 @@
+generated: '2026-07-11'
+method: searched
+probe: true
+source: https://uit.stanford.edu/security
+url: https://uit.stanford.edu/security
+certifications:
+- HIPAA
+- GDPR
+evidence:
+- source: https://uit.stanford.edu/security
+  keywords:
+  - hipaa
+  - gdpr

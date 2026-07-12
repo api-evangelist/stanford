@@ -127,6 +127,10 @@ apis:
       - type: Signup
         url: https://uit.stanford.edu/developers
 common:
+  - type: TrustCenter
+    url: security/stanford-trust-center.yml
+  - type: DomainSecurity
+    url: security/stanford-domain-security.yml
   - type: Website
     url: https://www.stanford.edu/
   - type: DeveloperPortal
