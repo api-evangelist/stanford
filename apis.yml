@@ -11,9 +11,21 @@ description: >-
   backing the Stanford Digital Repository, and the Registrar's ExploreCourses
   offers a course-data XML query interface.
 type: Index
+accessModel:
+  pricing: free
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Free
+  confidence: medium
+  source:
+    - plans
+  generated: '2026-07-22'
+  method: derived
 position: Consumer
 access: 3rd-Party
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/stanford.png
 url: https://raw.githubusercontent.com/api-evangelist/stanford/refs/heads/main/apis.yml
 tags:
   - Education
@@ -25,7 +37,7 @@ tags:
   - IIIF
   - Courses
 created: '2026-06-03'
-modified: '2026-06-03'
+modified: '2026-07-25'
 specificationVersion: '0.19'
 apis:
   - aid: stanford:library-iiif
@@ -73,24 +85,6 @@ apis:
     properties:
       - type: Documentation
         url: https://api.library.stanford.edu/docs/library-hours/api/
-  - aid: stanford:explorecourses
-    name: ExploreCourses Course Data API
-    description: >-
-      Programmatic XML query of the Registrar's course catalog (13,000+
-      courses) via explorecourses.stanford.edu/search?view=xml-20140630.
-      Community Python and R client libraries exist; no formal public
-      reference docs (Registrar's Office is the official contact).
-    humanURL: https://explorecourses.stanford.edu/about
-    baseURL: https://explorecourses.stanford.edu/search
-    tags:
-      - Courses
-      - Course Catalog
-      - XML
-    properties:
-      - type: Documentation
-        url: https://explorecourses.stanford.edu/about
-      - type: GitHub
-        url: https://github.com/jeremyephron/explore-courses-api
   - aid: stanford:cap-profiles
     name: CAP / Stanford Profiles API
     description: >-
@@ -155,6 +149,8 @@ common:
     url: finops/stanford-finops.yml
   - type: Review
     url: review.yml
+  - type: About
+    url: https://explorecourses.stanford.edu/about
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
