@@ -1,68 +1,116 @@
 aid: stanford
 name: Stanford University
+x-type: university
+x-category: Private Research University
 description: >-
-  Stanford University is a private research university in Stanford, California
-  (QS World 2025 #6) with a substantial, multi-pronged developer footprint.
-  University IT (UIT) runs a developer hub at uit.stanford.edu/developers
-  exposing certificate-secured MaIS Registry REST APIs (Account, Person,
-  Student, CourseClass, Privilege, Workgroup) plus an AI API Gateway. Stanford
-  Libraries (DLSS) publishes a public API documentation site at
-  api.library.stanford.edu (IIIF, PURL, Embed, Digital Stacks, Library Hours)
-  backing the Stanford Digital Repository, and the Registrar's ExploreCourses
-  offers a course-data XML query interface.
+  Stanford University is a private research university in Stanford, California. Unusually for a
+  higher-education institution, essentially its entire programmable footprint is genuinely
+  institution-operated rather than a vendor tenancy: every surface listed here runs on a
+  stanford.edu host. Stanford Libraries (SUL-DLSS) publishes five first-party OpenAPI contracts
+  for the Stanford Digital Repository — SDR, DOR Services, Technical Metadata, Preservation
+  Catalog and SURI, 76 operations, Apache 2.0, on its own GitHub org — though the services
+  themselves sit on the internal network. Public and open without credentials are PURL
+  (XML/MODS/IIIF Presentation 2.1 off purl.stanford.edu), the Library Hours JSON:API, and the
+  Registrar's ExploreCourses XML query interface, which reports its own deprecation in every
+  response body. University IT runs the certificate-gated MaIS Registry web services (Account,
+  Person, Student, CourseClass, Privilege, Workgroup) and a metered AI API Gateway keyed to a
+  Stanford billing account. Stanford also publishes signed Shibboleth SAML 2.0 identity-provider
+  metadata at idp.stanford.edu — machine-readable identity federation that most universities
+  never get catalogued. What is missing is equally clear: no OAI-PMH provider was found on any
+  Stanford host, no institution-operated open-data portal, no OAuth scopes, no contact or terms
+  in any contract, no examples on any of the 76 operations, and no unified developer portal
+  spanning the Libraries and University IT surfaces.
 type: Index
 accessModel:
   pricing: free
-  onboarding: unknown
+  onboarding: request
   trial: false
   try_now: false
-  public: false
-  label: Free
-  confidence: medium
+  public: partial
+  label: Mixed — open library data, gated administrative and AI surfaces
+  confidence: high
   source:
     - plans
-  generated: '2026-07-22'
-  method: derived
-position: Consumer
-access: 3rd-Party
+    - authentication/stanford-authentication.yml
+  generated: '2026-08-19'
+  method: probed
+position: Producer
+access: 1st-Party
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/stanford.png
 url: https://raw.githubusercontent.com/api-evangelist/stanford/refs/heads/main/apis.yml
 tags:
-  - Education
-  - Higher Education
   - University
+  - Higher Education
+  - Education
   - Research
+  - United States
+  - California
+  - Private Research University
+  - Association of American Universities
+  - Research Repository
+  - Course Catalog
+  - Identity Federation
   - Library
   - Digital Repository
+  - Artificial Intelligence
   - IIIF
-  - Courses
 created: '2026-06-03'
-modified: '2026-07-25'
+modified: '2026-08-19'
 specificationVersion: '0.23'
+x-coverage:
+  state: covered
+  reason: institution_operated_surfaces_verified
+  detail: >-
+    Every surface in this profile was probed live on 2026-08-19 and every one resolves to a host
+    under stanford.edu — the operator axis came back `institution` for all fifteen entries, with
+    zero tenant and zero vendor attributions. No Figshare, Pure, Ex Libris, Dataverse or
+    Symplectic contract is or was attributed to Stanford. Five first-party OpenAPI contracts were
+    recovered from the sul-dlss GitHub org and judged institution-operated by their own
+    servers[] (all *.stanford.edu) and info.title, not by where they were fetched. Three genuine
+    absences are recorded rather than padded: OAI-PMH is not present (six verb=Identify probes,
+    all 404), ORCID could not be evidenced, and there is no institution-operated open-data
+    portal. Three discovery applications — searchworks, exhibits and earthworks — sit behind an
+    F5/Shape bot defense that returns a 200 JavaScript challenge to any client; they are LIVE for
+    humans and unreadable to us, which is a limitation of the probe, not a finding about Stanford.
+  evidence:
+    - url: https://idp.stanford.edu/metadata.xml
+      status: 200
+      note: signed SAML 2.0 EntityDescriptor with shibmd:Scope stanford.edu
+    - url: https://library-hours.stanford.edu/libraries.json
+      status: 200
+      note: 'JSON:API document, 24 library locations'
+    - url: https://purl.stanford.edu/bb157hs6068.xml
+      status: 200
+      note: cocina-models/0.127.0 publicObject
+    - url: https://purl.stanford.edu/bb157hs6068/iiif/manifest
+      status: 200
+      note: IIIF Presentation 2.1 manifest
+    - url: https://explorecourses.stanford.edu/search?view=xml-20140630&q=CS106A&academicYear=20242025
+      status: 200
+      note: 'live course XML; body carries <deprecated>true</deprecated>'
+    - url: https://raw.githubusercontent.com/sul-dlss/dor-services-app/main/openapi.yml
+      status: 200
+      note: 'OpenAPI 3.1.2, servers dor-services-{env}.stanford.edu'
+    - url: https://uit.stanford.edu/service/ai-api-gateway
+      status: 200
+      note: AI API Gateway service page
+    - url: https://uit.stanford.edu/developers/apis
+      status: 200
+      note: MaIS Registry developer documentation
+    - url: https://purl.stanford.edu/oai?verb=Identify
+      status: 404
+      note: no OAI-PMH provider — one of six negative probes
+    - url: https://searchworks.stanford.edu/?q=maps&search_field=search
+      status: 200
+      note: F5/Shape bot challenge body, not the application — blocked to automated clients
 apis:
-  - aid: stanford:library-iiif
-    name: Stanford Libraries IIIF API
-    description: >-
-      IIIF Presentation (v2 stable, v3 alpha) and Image v2 APIs for digital
-      image interoperability across the Stanford Digital Repository.
-      Presentation manifests served from purl.stanford.edu; image tiles from
-      stacks.stanford.edu. Public and open.
-    humanURL: https://api.library.stanford.edu/docs/iiif/api/
-    baseURL: https://purl.stanford.edu
-    tags:
-      - Library
-      - IIIF
-      - Digital Repository
-      - Images
-    properties:
-      - type: Documentation
-        url: https://api.library.stanford.edu/docs/iiif/api/
   - aid: stanford:library-purl
     name: Stanford Libraries PURL API
+    x-operator: institution
     description: >-
-      Persistent URLs to Stanford Digital Repository (SDR) content. GET /{id}
-      returns HTML; /{id}.xml returns public XML metadata; /{id}.mods returns
-      MODS XML. Public and open.
+      Persistent URLs into the Stanford Digital Repository. GET /{druid} returns HTML,
+      /{druid}.xml returns the cocina publicObject document, /{druid}.mods returns MODS 3.7.
+      Open, no credential. Verified live 2026-08-19.
     humanURL: https://api.library.stanford.edu/docs/purl/api/
     baseURL: https://purl.stanford.edu
     tags:
@@ -73,42 +121,257 @@ apis:
     properties:
       - type: Documentation
         url: https://api.library.stanford.edu/docs/purl/api/
+      - type: Examples
+        url: examples/stanford-purl-publicobject-example.xml
+      - type: Examples
+        url: examples/stanford-purl-mods-example.xml
+  - aid: stanford:library-iiif
+    name: Stanford Libraries IIIF API
+    x-operator: institution
+    description: >-
+      IIIF Presentation (v2.1 stable, v3 alpha) and Image v2 APIs over the Stanford Digital
+      Repository. Manifests served from purl.stanford.edu, image tiles from stacks.stanford.edu.
+      Open, no credential. Manifest verified live 2026-08-19.
+    humanURL: https://api.library.stanford.edu/docs/iiif/api/
+    baseURL: https://purl.stanford.edu
+    tags:
+      - Library
+      - IIIF
+      - Digital Repository
+      - Images
+    properties:
+      - type: Documentation
+        url: https://api.library.stanford.edu/docs/iiif/api/
+      - type: Examples
+        url: examples/stanford-iiif-manifest-example.json
   - aid: stanford:library-hours
     name: Stanford Libraries Library Hours API
+    x-operator: institution
     description: >-
-      Public API returning operating hours for Stanford library locations.
+      Operating hours for 24 Stanford library locations, answered as a JSON:API document at
+      library-hours.stanford.edu/libraries.json. Open, no credential. Verified live 2026-08-19.
     humanURL: https://api.library.stanford.edu/docs/library-hours/api/
-    baseURL: https://api.library.stanford.edu
+    baseURL: https://library-hours.stanford.edu
     tags:
       - Library
       - Hours
+      - Campus Life
     properties:
       - type: Documentation
         url: https://api.library.stanford.edu/docs/library-hours/api/
-  - aid: stanford:cap-profiles
-    name: CAP / Stanford Profiles API
+      - type: Examples
+        url: examples/stanford-library-hours-example.json
+  - aid: stanford:library-digital-stacks
+    name: Stanford Libraries Digital Stacks API
+    x-operator: institution
     description: >-
-      API over the Community Academic Profiles directory (18,000+ faculty,
-      students, postdocs, and staff profiles). Interactive console available;
-      access requires credentials issued via HelpSU.
-    humanURL: https://profiles.sites.stanford.edu/developers
-    baseURL: https://cap.stanford.edu/cap-api
+      File and image delivery for Stanford Digital Repository content, served from
+      stacks.stanford.edu. Documentation verified live 2026-08-19; access to individual files
+      follows each object's rights statement.
+    humanURL: https://api.library.stanford.edu/docs/digital-stacks/api/
+    baseURL: https://stacks.stanford.edu
     tags:
-      - Academic Profiles
-      - Directory
-      - Identity
+      - Library
+      - Digital Repository
+      - Content Delivery
     properties:
       - type: Documentation
-        url: https://profiles-info.stanford.edu/
-      - type: GitHub
-        url: https://github.com/SU-SWS/cap-api
+        url: https://api.library.stanford.edu/docs/digital-stacks/api/
+  - aid: stanford:library-embed
+    name: Stanford Libraries Embed API
+    x-operator: institution
+    description: >-
+      oEmbed-style service returning an embeddable viewer for a Stanford Digital Repository
+      object. Documentation verified live 2026-08-19.
+    humanURL: https://api.library.stanford.edu/docs/embed/api/
+    baseURL: https://embed.stanford.edu/embed
+    tags:
+      - Library
+      - Digital Repository
+      - Embed
+    properties:
+      - type: Documentation
+        url: https://api.library.stanford.edu/docs/embed/api/
+      - type: Examples
+        url: examples/stanford-embed-oembed-example.json
+  - aid: stanford:sdr-api
+    name: SDR API
+    x-operator: institution
+    description: >-
+      Stanford Digital Repository deposit API. First-party OpenAPI 3.0.0 published by SUL-DLSS
+      under Apache 2.0; 7 paths, 8 operations, bearer auth. Servers are
+      sdr-api-{env}.stanford.edu — the production host resolves in public DNS but does not
+      answer a public connection, so the contract is public and the deployment is internal.
+    humanURL: https://github.com/sul-dlss/sdr-api
+    tags:
+      - Digital Repository
+      - Research Data
+      - Preservation
+    properties:
+      - type: OpenAPI
+        url: openapi/stanford-sdr-api-openapi.yml
+      - type: OpenAPIOriginal
+        url: openapi/_original/stanford-sdr-api-openapi.yml
+      - type: JSONSchema
+        url: json-schema/stanford-sdr-api-schemas.json
+      - type: SourceCode
+        url: https://github.com/sul-dlss/sdr-api
+  - aid: stanford:dor-services-api
+    name: DOR Services API
+    x-operator: institution
+    description: >-
+      The backend API for the Stanford Digital Repository, and the largest contract Stanford
+      publishes — OpenAPI 3.1.2, 40 paths, 53 operations, Apache 2.0, bearer auth. Validates
+      writes against Stanford's own cocina metadata model (422 on violation) and supports DOI
+      assignment. Servers are dor-services-{env}.stanford.edu; the deployment is internal.
+    humanURL: https://github.com/sul-dlss/dor-services-app
+    tags:
+      - Digital Repository
+      - Research Data
+      - Metadata
+      - Preservation
+    properties:
+      - type: OpenAPI
+        url: openapi/stanford-dor-services-api-openapi.yml
+      - type: OpenAPIOriginal
+        url: openapi/_original/stanford-dor-services-api-openapi.yml
+      - type: JSONSchema
+        url: json-schema/stanford-dor-services-api-schemas.json
+      - type: SourceCode
+        url: https://github.com/sul-dlss/dor-services-app
+  - aid: stanford:preservation-catalog-api
+    name: Preservation Catalog HTTP API
+    x-operator: institution
+    description: >-
+      Tracks the preservation state of Stanford Digital Repository objects (moab layout).
+      First-party OpenAPI 3.0.0, Apache 2.0, 7 paths, 8 operations, bearer auth. Servers are
+      preservation-catalog-{env}-01.stanford.edu, which do not resolve in public DNS.
+    humanURL: https://github.com/sul-dlss/preservation_catalog
+    tags:
+      - Digital Repository
+      - Preservation
+      - Research Data
+    properties:
+      - type: OpenAPI
+        url: openapi/stanford-preservation-catalog-api-openapi.yml
+      - type: OpenAPIOriginal
+        url: openapi/_original/stanford-preservation-catalog-api-openapi.yml
+      - type: JSONSchema
+        url: json-schema/stanford-preservation-catalog-api-schemas.json
+      - type: SourceCode
+        url: https://github.com/sul-dlss/preservation_catalog
+  - aid: stanford:technical-metadata-api
+    name: Technical Metadata API
+    x-operator: institution
+    description: >-
+      Technical (format, characterization) metadata for Stanford Digital Repository files.
+      First-party OpenAPI 3.0.0, Apache 2.0, 3 paths, 3 operations, 14 component schemas.
+      Declares no security scheme; servers technical-metadata-{env}.stanford.edu do not resolve
+      in public DNS.
+    humanURL: https://github.com/sul-dlss/technical-metadata-service
+    tags:
+      - Digital Repository
+      - Metadata
+      - Preservation
+    properties:
+      - type: OpenAPI
+        url: openapi/stanford-technical-metadata-api-openapi.yml
+      - type: OpenAPIOriginal
+        url: openapi/_original/stanford-technical-metadata-api-openapi.yml
+      - type: JSONSchema
+        url: json-schema/stanford-technical-metadata-api-schemas.json
+      - type: SourceCode
+        url: https://github.com/sul-dlss/technical-metadata-service
+  - aid: stanford:suri-api
+    name: SURI API
+    x-operator: institution
+    description: >-
+      Stanford Uniform Resource Identifier service — mints the druids every other SDR surface
+      keys on. First-party OpenAPI 3.0.0, Apache 2.0, 3 paths, 4 operations, and an in-contract
+      `legacy` tag alongside `identifiers`. Servers sul-suri-{env}.stanford.edu are internal.
+    humanURL: https://github.com/sul-dlss/suri-rails
+    tags:
+      - Digital Repository
+      - Persistent Identifiers
+    properties:
+      - type: OpenAPI
+        url: openapi/stanford-suri-api-openapi.yml
+      - type: OpenAPIOriginal
+        url: openapi/_original/stanford-suri-api-openapi.yml
+      - type: JSONSchema
+        url: json-schema/stanford-suri-api-schemas.json
+      - type: SourceCode
+        url: https://github.com/sul-dlss/suri-rails
+  - aid: stanford:explorecourses
+    name: ExploreCourses course-data XML query interface
+    x-operator: institution
+    description: >-
+      The Registrar's course catalog, queryable as XML by appending view=xml-20140630 to a
+      search. Open, no credential, and the largest genuinely public dataset Stanford serves — a
+      single department query returned 17MB in August 2026. No formal reference is published;
+      the query form is community-documented. The response itself carries
+      <deprecated>true</deprecated> and <latestVersion>20200810</latestVersion>.
+    humanURL: https://explorecourses.stanford.edu/about
+    baseURL: https://explorecourses.stanford.edu/search
+    tags:
+      - Course Catalog
+      - Registrar
+      - Open Data
+    properties:
+      - type: About
+        url: https://explorecourses.stanford.edu/about
+      - type: Examples
+        url: examples/stanford-explorecourses-example.xml
+  - aid: stanford:idp-saml
+    name: Stanford Identity Provider — SAML 2.0 metadata
+    x-operator: institution
+    description: >-
+      Signed Shibboleth SAML 2.0 identity-provider metadata, entityID https://idp.stanford.edu/,
+      valid until 2027-08-16. Declares an IDPSSODescriptor, three SSO bindings (HTTP-POST,
+      HTTP-POST-SimpleSign, HTTP-Redirect) at login.stanford.edu, and shibmd:Scope stanford.edu.
+      Institution-operated by definition and the strongest domain-standard evidence in this
+      profile — it satisfies both `saml` and `shibboleth` in the education regime.
+    humanURL: https://uit.stanford.edu/guide/single-sign-on
+    baseURL: https://idp.stanford.edu/metadata.xml
+    tags:
+      - Identity Federation
+      - SAML
+      - Shibboleth
+      - Single Sign-On
+    properties:
+      - type: Documentation
+        url: https://uit.stanford.edu/guide/single-sign-on
+      - type: Examples
+        url: examples/stanford-idp-saml-metadata.xml
+  - aid: stanford:ai-api-gateway
+    name: Stanford AI API Gateway
+    x-operator: institution
+    description: >-
+      Direct API access to the large language models hosted in Stanford's own cloud
+      infrastructure behind the AI Playground, for faculty, staff and students building their own
+      AI applications. Keyed per API key and billed to a Stanford PTA, with usage queryable by
+      key, and approved for High Risk data and PHI. Institution-operated at the gateway layer
+      even though the models behind it are commercial third parties' — the metering, the key
+      issuance, the data-classification approval and the rate card are all Stanford's.
+    humanURL: https://uit.stanford.edu/service/ai-api-gateway
+    tags:
+      - Artificial Intelligence
+      - AI Gateway
+      - Large Language Models
+    properties:
+      - type: Documentation
+        url: https://uit.stanford.edu/service/ai-api-gateway
+      - type: Signup
+        url: https://uit.stanford.edu/service/ai-api-gateway
   - aid: stanford:mais-registry
     name: MaIS Registry APIs
+    x-operator: institution
     description: >-
-      University IT MaIS Registry REST APIs — Account, Person, Student,
-      CourseClass, Privilege, and Workgroup — documented publicly but gated:
-      access requires an x509 client certificate signed by the MaIS team. No
-      public base URLs or sandbox.
+      University IT's Registry web services — Account, Person, Student, CourseClass, Privilege
+      and Workgroup — over Stanford's consolidated system of record. Documented publicly but
+      gated: access requires an x509 client certificate signed by the MaIS team. No public base
+      URLs and no sandbox. The Privilege and Workgroup services together are Stanford's campus
+      entitlement model, exposed as APIs rather than as scopes.
     humanURL: https://uit.stanford.edu/developers/apis
     tags:
       - Identity
@@ -118,29 +381,95 @@ apis:
     properties:
       - type: Documentation
         url: https://uit.stanford.edu/developers/apis
+      - type: GettingStarted
+        url: https://uit.stanford.edu/developers/apis/getting-started
       - type: Signup
         url: https://uit.stanford.edu/developers
+  - aid: stanford:cap-profiles
+    name: CAP / Stanford Profiles API
+    x-operator: institution
+    description: >-
+      API over the Community Academic Profiles directory (18,000+ faculty, students, postdocs
+      and staff). The interactive console at cap.stanford.edu/cap-api/console redirects to
+      authentication; credentials are issued via HelpSU. Institution-operated — CAP is Stanford's
+      own application, source at github.com/SU-SWS/cap-api, not a Symplectic or Pure tenancy.
+    humanURL: https://profiles.sites.stanford.edu/developers
+    baseURL: https://cap.stanford.edu/cap-api
+    tags:
+      - Academic Profiles
+      - Directory
+      - Identity
+      - Research
+    properties:
+      - type: Documentation
+        url: https://profiles-info.stanford.edu/
+      - type: SourceCode
+        url: https://github.com/SU-SWS/cap-api
 common:
-  - type: TrustCenter
-    url: security/stanford-trust-center.yml
-  - type: DomainSecurity
-    url: security/stanford-domain-security.yml
   - type: Website
     url: https://www.stanford.edu/
   - type: DeveloperPortal
     url: https://uit.stanford.edu/developers
-  - type: DeveloperPortal
+  - type: APIReference
     url: https://api.library.stanford.edu/
-  - type: GitHub
+  - type: Documentation
+    url: https://uit.stanford.edu/developers/apis
+  - type: CourseCatalog
+    url: https://explorecourses.stanford.edu/about
+  - type: ResearchRepository
+    url: https://purl.stanford.edu/
+  - type: LibraryCatalog
+    url: https://searchworks.stanford.edu/
+  - type: IdentityFederation
+    url: https://idp.stanford.edu/metadata.xml
+  - type: ResearchComputing
+    url: https://srcc.stanford.edu/
+  - type: AIPolicy
+    url: https://uit.stanford.edu/security/responsibleai
+  - type: AITooling
+    url: https://uit.stanford.edu/ai
+  - type: GitHubOrganization
     url: https://github.com/sul-dlss
   - type: GitHub
     url: https://github.com/SU-SWS
   - type: Authentication
     url: https://login.stanford.edu/
-  - type: Twitter
-    url: https://twitter.com/Stanford
+  - type: Status
+    url: https://library-status.stanford.edu/
+  - type: Support
+    url: https://stanford.service-now.com/it_services?id=get_help
+  - type: TermsOfService
+    url: https://www.stanford.edu/site/terms/
+  - type: PrivacyPolicy
+    url: https://www.stanford.edu/site/privacy/
+  - type: SecurityContact
+    url: https://uit.stanford.edu/security/report-incident
   - type: LinkedIn
     url: https://www.linkedin.com/school/stanford-university/
+  - type: Twitter
+    url: https://twitter.com/Stanford
+  - type: TrustCenter
+    url: security/stanford-trust-center.yml
+  - type: DomainSecurity
+    url: security/stanford-domain-security.yml
+  - type: Authentication
+    url: authentication/stanford-authentication.yml
+  - type: Scopes
+    url: scopes/stanford-scopes.yml
+  - type: Errors
+    url: errors/stanford-errors.yml
+  - type: Conformance
+    url: conformance/stanford-conformance.yml
+  - type: Lifecycle
+    url: lifecycle/stanford-lifecycle.yml
+  - type: Vocabulary
+    url: vocabulary/stanford-vocabulary.yml
+  - type: Rules
+    url: rules/stanford-rules.yml
+  - type: JSONLD
+    url: json-ld/stanford-context.jsonld
+  - type: Examples
+    url: examples/index.yml
   - type: Plans
     url: plans/stanford-plans-pricing.yml
   - type: RateLimits
@@ -149,8 +478,6 @@ common:
     url: finops/stanford-finops.yml
   - type: Review
     url: review.yml
-  - type: About
-    url: https://explorecourses.stanford.edu/about
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
