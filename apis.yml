@@ -138,6 +138,11 @@ apis:
       - Library
       - IIIF
       - Digital Repository
+      - Image
+    tags_raw:
+      - Library
+      - IIIF
+      - Digital Repository
       - Images
     properties:
       - type: Documentation
