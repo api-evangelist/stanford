@@ -21,6 +21,19 @@ description: >-
   in any contract, no examples on any of the 76 operations, and no unified developer portal
   spanning the Libraries and University IT surfaces.
 type: Index
+deliveryModel:
+  model: unknown
+  open_source: unknown
+  commercial: true
+  callable_host: true
+  label: Delivery model not determined — needs a product licence on record
+  confidence: low
+  source:
+  - openapi
+  - pricing
+  - repository-unlicensed
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: free
   onboarding: request
