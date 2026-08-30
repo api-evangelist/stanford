@@ -1,0 +1,183 @@
+{
+  "x-generated": "2026-08-19",
+  "x-method": "probed",
+  "x-operator": "institution",
+  "x-source": "https://purl.stanford.edu/bb157hs6068/iiif/manifest",
+  "x-probed": {
+    "url": "https://purl.stanford.edu/bb157hs6068/iiif/manifest",
+    "status": 200,
+    "content_type": "application/ld+json; profile=\"http://iiif.io/api/presentation/2/context.json\""
+  },
+  "x-note": "Live IIIF Presentation 2.1 manifest for SDR druid bb157hs6068, served from Stanford's own purl.stanford.edu.",
+  "manifest": {
+    "@context": "http://iiif.io/api/presentation/2/context.json",
+    "@id": "https://purl.stanford.edu/bb157hs6068/iiif/manifest",
+    "@type": "sc:Manifest",
+    "label": "NOUVELLE CARTE DE LA SPHERE POUR FAIRE CONNOITRE LES DIVERS MOUVEMENS DES PLANETES ET LEURS DIVERSES REVOLUTIONS, AVEC DES REMARQUES HISTORIQUES POUR CONDUIRE A CETTE CONNOISSANCE",
+    "attribution": "This work has been identified as being free of known restrictions under copyright law, including all related and neighboring rights. You can copy, modify, distribute and perform the work, even for commercial purposes, all without asking permission.",
+    "logo": {
+      "@id": "https://stacks.stanford.edu/image/iiif/wy534zh7137/SULAIR_rosette/full/400,/0/default.jpg",
+      "service": {
+        "@context": "http://iiif.io/api/image/2/context.json",
+        "@id": "https://stacks.stanford.edu/image/iiif/wy534zh7137/SULAIR_rosette",
+        "profile": "http://iiif.io/api/image/2/level2.json"
+      }
+    },
+    "license": "https://creativecommons.org/publicdomain/mark/1.0/",
+    "seeAlso": {
+      "@id": "https://purl.stanford.edu/bb157hs6068.mods",
+      "format": "application/mods+xml"
+    },
+    "metadata": [
+      {
+        "label": "Available Online",
+        "value": "<a href='https://purl.stanford.edu/bb157hs6068'>https://purl.stanford.edu/bb157hs6068</a>"
+      },
+      {
+        "label": "Title",
+        "value": "NOUVELLE CARTE DE LA SPHERE POUR FAIRE CONNOITRE LES DIVERS MOUVEMENS DES PLANETES ET LEURS DIVERSES REVOLUTIONS, AVEC DES REMARQUES HISTORIQUES POUR CONDUIRE A CETTE CONNOISSANCE"
+      },
+      {
+        "label": "Contributor",
+        "value": "Chatelain, Henri Abraham"
+      },
+      {
+        "label": "Type",
+        "value": "Digital Maps"
+      },
+      {
+        "label": "Type",
+        "value": "Early Maps"
+      },
+      {
+        "label": "Type",
+        "value": "Map"
+      },
+      {
+        "label": "Format",
+        "value": "51.5 x 59.8 cm., including title along top and border, with 10 diagrams/maps and 6 columns of titled text."
+      },
+      {
+        "label": "Statement of responsibility",
+        "value": "[Henry Abraham Ch\u00e2telain]."
+      },
+      {
+        "label": "Description",
+        "value": "California, with open northern edge, suggesting it may be an island and that northwest passage may exist, on 2 small hemisphere maps, each with 5 cm. diameter. First with title: Hemisphere terrestre pour faire observer les 6 grands cercles de la sphere. Second with title: Hemisphere terrestre pour dis= tinguer les 4 petits cercles, et les 5 zo."
+      },
+      {
+        "label": "Description",
+        "value": "First issued in his: Atlas historique, ou nouvelle introduction a l'histoire , \u00e0 la chronologie & \u00e0 la g\u00e9ographie ancienne & moderne ... -- Amsterdam. 1705. Reissued in 1721 (with imprint as above)."
+      },
+      {
+        "label": "Description",
+        "value": "The larger diagrams are entitled: Le monde selon l'hypothese de copernic et la disposition des planetes ala naissance de Louis XIV, Sphere artificielle, Sisteme de Copernic sur les divers mouvemens des planetes, Sisteme de Ticho Brahe,Sisteme de Ptolom\u00e9e, Idee generale pour faire comprendre les divers signes que la terre parcourt autour du soleil qui servent a regler les saisons (celestial chart)."
+      },
+      {
+        "label": "Description",
+        "value": "The text is entitled: Remarque sur les divers mouvemens de la terre, Remarque sur le mouvemens et l'arrangement des planetes, Remarque sur la sphere, Remarque sur la maniere dont se font les saisons, Suite de la remarque sur la sphere, Conclusion et reflection morale, Comment l'hypothese de Copernic est conforme aux loix du mouvemens et de la nature, Inconveniens et difficultez qui resultent des sistemes de Ptoleme\u00e9 et Ticho Brahe."
+      },
+      {
+        "label": "Description",
+        "value": "Tom.1. No.9. (top right)."
+      },
+      {
+        "label": "Description",
+        "value": "Post publication map number: 1040"
+      },
+      {
+        "label": "Citation/Reference",
+        "value": "LC 548, 579; Koeman II, Cha 1,2; UCB; Ashley Baynton-Williams."
+      },
+      {
+        "label": "Subject",
+        "value": "Astronomy"
+      },
+      {
+        "label": "Coverage",
+        "value": "Scale not given"
+      },
+      {
+        "label": "Coverage",
+        "value": "180\u00b000\u203200\u2033W -- 180\u00b000\u203200\u2033E / 85\u00b000\u203200\u2033N -- 85\u00b000\u203200\u2033S"
+      },
+      {
+        "label": "Date",
+        "value": "1721"
+      },
+      {
+        "label": "Identifier",
+        "value": "https://purl.stanford.edu/bb157hs6068"
+      },
+      {
+        "label": "Publisher",
+        "value": "s.n."
+      },
+      {
+        "label": "Relation",
+        "value": "The Glen McLaughlin Map Collection of California as an Island"
+      },
+      {
+        "label": "Record published",
+        "value": "2026-07-13"
+      }
+    ],
+    "description": "California, with open northern edge, suggesting it may be an island and that northwest passage may exist, on 2 small hemisphere maps, each with 5 cm. diameter. First with title: Hemisphere terrestre pour faire observer les 6 grands cercles de la sphere. Second with title: Hemisphere terrestre pour dis= tinguer les 4 petits cercles, et les 5 zo.",
+    "thumbnail": {
+      "@id": "https://stacks.stanford.edu/image/iiif/bb157hs6068%2Fbb157hs6068_05_0001/full/!400,400/0/default.jpg",
+      "@type": "dctypes:Image",
+      "format": "image/jpeg",
+      "service": {
+        "@context": "http://iiif.io/api/image/2/context.json",
+        "@id": "https://stacks.stanford.edu/image/iiif/bb157hs6068%2Fbb157hs6068_05_0001",
+        "profile": "http://iiif.io/api/image/2/level2.json"
+      },
+      "width": 400,
+      "height": 345
+    },
+    "sequences": [
+      {
+        "@id": "https://purl.stanford.edu/bb157hs6068/iiif/manifest#sequence-1",
+        "@type": "sc:Sequence",
+        "label": "Current order",
+        "viewingDirection": "left-to-right",
+        "canvases": [
+          {
+            "@id": "https://purl.stanford.edu/bb157hs6068/iiif/canvas/cocina-fileSet-bb157hs6068-bb157hs6068_1",
+            "@type": "sc:Canvas",
+            "label": "0001",
+            "height": 9040,
+            "width": 10481,
+            "rendering": [
+              {
+                "@id": "https://stacks.stanford.edu/file/bb157hs6068/bb157hs6068_05_0001.jp2",
+                "label": "Original source file (17 MB)",
+                "format": "image/jp2"
+              }
+            ],
+            "images": [
+              {
+                "@id": "https://purl.stanford.edu/bb157hs6068/iiif/annotation/https:%2F%2Fcocina.sul.stanford.edu%2Ffile%2Fbb157hs6068-bb157hs6068_1%2Fbb157hs6068_05_0001.jp2",
+                "@type": "oa:Annotation",
+                "motivation": "sc:painting",
+                "on": "https://purl.stanford.edu/bb157hs6068/iiif/canvas/cocina-fileSet-bb157hs6068-bb157hs6068_1",
+                "resource": {
+                  "@id": "https://stacks.stanford.edu/image/iiif/bb157hs6068%2Fbb157hs6068_05_0001/full/full/0/default.jpg",
+                  "@type": "dctypes:Image",
+                  "format": "image/jpeg",
+                  "height": 9040,
+                  "width": 10481,
+                  "service": {
+                    "@context": "http://iiif.io/api/image/2/context.json",
+                    "@id": "https://stacks.stanford.edu/image/iiif/bb157hs6068%2Fbb157hs6068_05_0001",
+                    "profile": "http://iiif.io/api/image/2/level2.json"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

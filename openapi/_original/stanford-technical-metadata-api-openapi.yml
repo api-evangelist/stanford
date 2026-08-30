@@ -1,0 +1,360 @@
+openapi: 3.0.0
+info:
+  description: API for the Stanford digital repository technical metadata
+  version: 1.0.0
+  title: Technical Metadata API
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+servers:
+  - url: 'https://technical-metadata-{env}.stanford.edu'
+    description: Production service
+    variables:
+      env:
+        default: prod
+  - url: 'https://technical-metadata-{env}.stanford.edu'
+    description: Staging service
+    variables:
+      env:
+        default: stage
+tags:
+  - name: metadata
+    description: Digital Repository Objects
+paths:
+  /v1/technical-metadata:
+    post:
+      tags:
+        - metadata
+      summary: Create the metadata for the object
+      description: ''
+      operationId: 'technical_metadata#create'
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - druid
+                - files
+                - basepath
+              properties:
+                druid:
+                    $ref: '#/components/schemas/Druid'
+                files:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/FileInfo'
+                basepath:
+                  type: string
+                  description: Path to be removed from filepath to get filename
+                force:
+                  type: boolean
+                  description: Extract the technical metadata even if a record already exists with that checksum
+                lane-id:
+                  type: string
+                  enum:
+                    - 'high'
+                    - 'default'
+                    - 'low'
+                  default: 'default'
+  /v1/technical-metadata/druid/{druid}:
+    get:
+      tags:
+        - metadata
+      summary: Get the metadata for the files associated with a druid
+      description: ''
+      operationId: technical_metadata#show_by_druid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DroFile'
+        '404':
+          description: Druid not found
+      parameters:
+        - name: druid
+          in: path
+          description: druid for which to return the technical metadata
+          required: true
+          schema:
+            $ref: '#/components/schemas/Druid'
+  /v1/technical-metadata/audit/{druid}:
+    post:
+      tags:
+        - metadata
+      summary: Diff the technical metadata DB entries for a druid against the expected file/hash list provided to the endpoint
+      description: ''
+      operationId: technical_metadata#audit_by_druid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileAuditResult'
+        '404':
+          description: Druid not found
+        '401':
+          description: Unauthorized
+      parameters:
+        - name: druid
+          in: path
+          description: druid for which to audit the technical metadata
+          required: true
+          schema:
+            $ref: '#/components/schemas/Druid'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - expected_files
+              properties:
+                expected_files:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/FileAuditInfo'
+components:
+  schemas:
+    AudioMetadata:
+      description: Audio-specific technical metadata
+      type: object
+      properties:
+        format_profile:
+          type: string
+        codec_id:
+          type: string
+        channels:
+          type: string
+        sampling_rate:
+          type: integer
+        bit_depth:
+          type: integer
+        stream_size:
+          type: integer
+        mean_volume:
+          type: number
+          format: float
+        max_volume:
+          type: number
+          format: float
+    AvMetadata:
+      description: Audio/visual-specific technical metadata
+      type: object
+      properties:
+        video_count:
+          type: integer
+        audio_count:
+          type: integer
+        other_count:
+          type: integer
+        file_extension:
+          type: string
+        format:
+          type: string
+        format_profile:
+          type: string
+        codec_id:
+          type: string
+        duration:
+          type: number
+          format: float
+        frame_rate:
+          type: number
+          format: float
+        encoded_date:
+          type: string
+    DroFile:
+      description: Technical metadata for a single file
+      type: object
+      properties:
+        druid:
+          $ref: '#/components/schemas/Druid'
+        filename:
+          type: string
+        filetype:
+          description: Pronom id
+          type: string
+        mimetype:
+          type: string
+        bytes:
+          type: integer
+        file_modification:
+          type: string
+          format: date-time
+        image_metadata:
+          $ref: '#/components/schemas/ImageMetadata'
+        pdf_metdata:
+          $ref: '#/components/schemas/PdfMetadata'
+        av_metadata:
+          $ref: '#/components/schemas/AvMetadata'
+        dro_file_parts:
+          type: array
+          items:
+            $ref: '#/components/schemas/DroFilePart'
+      required:
+        - druid
+        - filename
+    DroFilePart:
+      description: Technical metadata for part of a file, e.g., a track
+      type: object
+      properties:
+        part_type:
+          type: string
+          enum:
+            - 'audio'
+            - 'video'
+            - 'text'
+            - 'other'
+        part_id:
+          type: string
+        order:
+          type: integer
+        format:
+          type: string
+        audio_metadata:
+          $ref: '#/components/schemas/AudioMetadata'
+        video_metadata:
+          $ref: '#/components/schemas/VideoMetadata'
+        other_metadata:
+          $ref: '#/components/schemas/OtherAvMetadata'
+      required:
+        - part_type
+    Druid:
+      description: Digital Repository Unique Identifier (ID)
+      type: string
+      pattern: '^druid:[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}$'
+      example: 'druid:bc123df4567'
+    FileURI:
+      description: File URI for the absolute path of the file
+      type: string
+      pattern: '^file:\/\/\/([^\\/]+\/)*[^\\/]+$'
+      example: 'file:///foo/bar/baz/quix.jp2'
+    FileName:
+      description: filename for a file in SDR (from Cocina metadata)
+      type: string
+      pattern: '^([^\\/]+\/)*[^\\/]+$'
+      example: 'foo/bar/baz/quix.jp2'
+    FileInfo:
+      description: Information about a file.
+      type: object
+      properties:
+        uri:
+          $ref: '#/components/schemas/FileURI'
+        md5:
+          type: string
+      required:
+        - uri
+        - md5
+    FileAuditInfo:
+      description: Information about a file in SDR for which we expect technical metadata to exist.
+      type: object
+      properties:
+        filename:
+          $ref: '#/components/schemas/FileName'
+        md5:
+          type: string
+      required:
+        - filename
+        - md5
+    FileAuditResult:
+      description: Information about detected differences between expected technical metadata entries and actual technical metadata entries
+      type: object
+      properties:
+        missing_filenames:
+          type: array
+          items:
+            $ref:
+              '#/components/schemas/FileName'
+        unexpected_filenames:
+          type: array
+          items:
+            $ref:
+              '#/components/schemas/FileName'
+        mismatched_checksum_file_infos:
+          type: array
+          items:
+            $ref:
+              '#/components/schemas/FileAuditInfo'
+    ImageMetadata:
+      description: Image-specific technical metadata
+      type: object
+      properties:
+        # Some image formats, e.g., SVG return floats for height and width, hence type: number
+        height:
+          type: number
+        width:
+          type: number
+    OtherAvMetadata:
+      description: Other technical metadata for a file part
+      type: object
+      properties:
+        other_type:
+          type: string
+        type:
+          type: string
+    PdfMetadata:
+      description: PDF-specific technical metadata
+      type: object
+      properties:
+        pdf_version:
+          type: string
+        pages:
+          type: integer
+        page_size:
+          type: string
+        tagged:
+          type: boolean
+        encrypted:
+          type: boolean
+        javascript:
+          type: boolean
+        form:
+          type: boolean
+        text:
+          type: boolean
+        creator:
+          type: string
+        producer:
+          type: string
+    VideoMetadata:
+      description: Video-specific technical metadata
+      type: object
+      properties:
+        format_profile:
+          type: string
+        codec_id:
+          type: string
+        height:
+          type: integer
+        width:
+          type: integer
+        display_aspect_ratio:
+          type: number
+          format: float
+        pixel_aspect_ratio:
+          type: number
+          format: float
+        frame_rate:
+          type: number
+          format: float
+        color_space:
+          type: string
+        chroma_subsampling:
+          type: string
+        bit_depth:
+          type: integer
+        language:
+          type: string
+        stream_size:
+          type: integer
+        standard:
+          type: string

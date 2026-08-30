@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- API Evangelist example capture
+     generated: 2026-08-19
+     method: probed
+     x-operator: institution
+     source: https://explorecourses.stanford.edu/search?view=xml-20140630&q=CS106A&academicYear=20242025
+     probed: HTTP 200, content-type text/xml; charset=UTF-8
+     note: single <course> element extracted from a live ExploreCourses XML response.
+           The service reports deprecated=true for view=xml-20140630;
+           latestVersion=20200810. Stanford Registrar, institution-operated. -->
+<xml>
+  <deprecated>true</deprecated>
+  <latestVersion>20200810</latestVersion>
+  <courses>
+    <course>
+	        	<year>2024-2025</year>
+	        	<subject>AA</subject>
+	        	<code>174B</code>
+				<title>Principles of Robot Autonomy II (AA 274B, CS 237B, EE 260B, ME 274B)</title>
+				<description>This course teaches advanced principles for endowing mobile autonomous robots with capabilities to autonomously learn new skills and to physically interact with the environment and with humans. It also provides an overview of different robot system architectures. Concepts that will be covered in the course are: Reinforcement Learning and its relationship to optimal control, contact and dynamics models for prehensile and non-prehensile robot manipulation, imitation learning and human intent inference, as well as different system architectures and their verification. Students will earn the theoretical foundations for these concepts and implement them on mobile manipulation platforms. In homeworks, the Robot Operating System (ROS) will be used extensively for demonstrations and hands-on activities. Prerequisites: CS106A or equivalent, CME 100 or equivalent (for linear algebra), CME 106 or equivalent (for probability theory), and AA 171/274.</description>
+				<gers></gers>
+				<repeatable>false</repeatable>
+				<grading>Letter or Credit/No Credit</grading>
+				<unitsMin>3</unitsMin>
+				<unitsMax>4</unitsMax>
+				<learningObjectives>
+					
+				</learningObjectives>
+				<sections>
+					
+						<section>
+							<classId>1569</classId>
+							<term>2024-2025 Winter</term>
+							<termId>1254</termId>
+							<subject>AA</subject>
+	        				<code>174B</code>
+							<units>3-4</units>
+							<sectionNumber>01</sectionNumber>
+							<component>LEC</component>
+							<numEnrolled>5</numEnrolled>
+							<maxEnrolled>20</maxEnrolled>
+							<numWaitlist>0</numWaitlist>
+							<maxWaitlist>0</maxWaitlist>
+							<enrollStatus>Open</enrollStatus>
+							<addConsent>N</addConsent>
+							<dropConsent>N</dropConsent>
+							<courseId>221536</courseId>
+							<schedules>
+								
+									<schedule>
+										
+										<startDate>Jan 6, 2025</startDate>
+										<endDate>Mar 14, 2025</endDate>
+										<startTime>1:30:00 PM</startTime>
+										<endTime>2:50:00 PM</endTime>
+										<location>Skilling Auditorium</location>
+										<days>
+											
+											Monday
+											
+											Wednesday
+											
+											
+											
+										</days>
+										<instructors>
+											
+												<instructor>
+													<name>Sadigh, D.</name>
+													<firstName>Dorsa</firstName>
+													<middleName></middleName>
+													<lastName>Sadigh</lastName>
+													<sunet>dorsa</sunet>
+													<role>PI</role>
+												</instructor>
+											
+												<instructor>
+													<name>Belkhale, S.</name>
+													<firstName>Suneel</firstName>
+													<middleName>Krishna</middleName>
+													<lastName>Belkhale</lastName>
+													<sunet>belkhale</sunet>
+													<role>TA</role>
+												</instructor>
+											
+												<instructor>
+													<name>Dutt, A.</name>
+													<firstName>Aditya</firstName>
+													<middleName></middleName>
+													<lastName>Dutt</lastName>
+													<sunet>asdutt2</sunet>
+													<role>TA</role>
+												</instructor>
+											
+												<instructor>
+													<name>Agia, C.</name>
+													<firstName>Chris</firstName>
+													<middleName>George</middleName>
+													<lastName>Agia</lastName>
+													<sunet>cagia</sunet>
+													<role>TA</role>
+												</instructor>
+											
+												<instructor>
+													<name>Dai, T.</name>
+													<firstName>Tianyuan</firstName>
+													<middleName></middleName>
+													<lastName>Dai</lastName>
+													<sunet>tydai</sunet>
+													<role>TA</role>
+												</instructor>
+											
+												<instructor>
+													<name>Pavone, M.</name>
+													<firstName>Marco</firstName>
+													<middleName></middleName>
+													<lastName>Pavone</lastName>
+													<sunet>pavone</sunet>
+													<role>PI</role>
+												</instructor>
+											
+												<instructor>
+													<name>Bohg, J.</name>
+													<firstName>Jeannette</firstName>
+													<middleName></middleName>
+													<lastName>Bohg</lastName>
+													<sunet>bohg</sunet>
+													<role>PI</role>
+												</instructor>
+											
+										</instructors>
+									</schedule>
+								
+							</schedules>
+							<currentClassSize>5</currentClassSize>
+							<maxClassSize>20</maxClassSize>
+							<currentWaitlistSize>0</currentWaitlistSize>
+							<maxWaitlistSize>0</maxWaitlistSize>
+							<notes></notes>
+							<attributes>
+								
+									
+										<attribute>
+											<name>NQTR</name>
+											<value>WIN</value>
+											<description>Winter</description>
+											<catalogPrint>true</catalogPrint>
+											<schedulePrint>false</schedulePrint>
+										</attribute>
+									
+								
+							</attributes>
+						</section>
+					
+				</sections>
+				<administrativeInformation>
+					<courseId>221536</courseId>
+					<effectiveStatus>A</effectiveStatus>
+					<offerNumber>3</offerNumber>
+					<academicGroup>ENGR</academicGroup>
+					<academicOrganization>AEROASTRO</academicOrganization>
+					<academicCareer>UG</academicCareer>
+					<finalExamFlag>Y</finalExamFlag>
+					<catalogPrint>Y</catalogPrint>
+					<schedulePrint>Y</schedulePrint>
+					<maxUnitsRepeat>4</maxUnitsRepeat>
+					<maxTimesRepeat>1</maxTimesRepeat>
+				</administrativeInformation>
+				<attributes>
+					
+						
+							<attribute>
+								<name>NQTR</name>
+								<value>WIN</value>
+								<description>Winter</description>
+								<catalogPrint>true</catalogPrint>
+								<schedulePrint>false</schedulePrint>
+							</attribute>
+						
+					
+				</attributes>
+				<tags>
+					
+				</tags>
+		    </course>
+  </courses>
+</xml>

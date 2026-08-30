@@ -1,0 +1,102 @@
+openapi: 3.2.0
+info:
+  description: Backend API for the Stanford Digital Repository
+  version: 1.0.0
+  title: DOR Services Events API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://dor-services-{env}.stanford.edu
+  description: Production service
+  variables:
+    env:
+      default: prod
+- url: https://dor-services-{env}.stanford.edu
+  description: Staging service
+  variables:
+    env:
+      default: stage
+- url: https://dor-services-{env}.stanford.edu
+  description: QA service
+  variables:
+    env:
+      default: qa
+security:
+- bearerAuth: []
+tags:
+- name: events
+  description: Operations about events
+paths:
+  /v1/objects/{object_id}/events:
+    get:
+      tags:
+      - events
+      summary: Return a list of events about this object
+      description: ''
+      operationId: events#index
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ObjectEvent'
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: event_types
+        in: query
+        description: Filter events by type
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+    post:
+      tags:
+      - events
+      summary: Create an event about this object
+      description: ''
+      operationId: events#create
+      responses:
+        '201':
+          description: Created
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      requestBody:
+        description: event to add to the system
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectEvent'
+components:
+  schemas:
+    ObjectEvent:
+      type: object
+      required:
+      - event_type
+      - data
+      properties:
+        event_type:
+          description: the type of event
+          type: string
+        data:
+          description: details about the event
+          type: object
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

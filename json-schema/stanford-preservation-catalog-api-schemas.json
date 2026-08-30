@@ -1,0 +1,280 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/stanford/main/json-schema/stanford-preservation-catalog-api-schemas.json",
+  "title": "Preservation Catalog HTTP API \u2014 component schemas",
+  "description": "JSON Schema extracted from the components.schemas block of Stanford University Libraries' first-party OpenAPI for the Preservation Catalog HTTP API. Institution-operated: every server in the source contract is under stanford.edu.",
+  "x-operator": "institution",
+  "x-generated": "2026-08-19",
+  "x-method": "derived",
+  "x-source": "https://raw.githubusercontent.com/sul-dlss/preservation_catalog/main/openapi.yml",
+  "$defs": {
+    "Druid": {
+      "description": "Digital Repository Unique Identifier (bare or prefixed)",
+      "type": "string",
+      "pattern": "^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}$",
+      "example": "druid:bc123df4567"
+    },
+    "DruidWithOptionalFormat": {
+      "description": "Digital Repository Unique Identifier (bare or prefixed), with a file extension",
+      "type": "string",
+      "pattern": "^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}(\\.json)?$",
+      "example": "druid:bc123df4567.json"
+    },
+    "CatalogOptions": {
+      "description": "Options for catalog controller endpoint",
+      "type": "object",
+      "properties": {
+        "incoming_version": {
+          "description": "Version of the object",
+          "type": "integer"
+        },
+        "incoming_size": {
+          "description": "Size in bytes of the object on disk",
+          "type": "integer"
+        },
+        "storage_location": {
+          "description": "Storage root where the moab object is located (must correspond to a real MoabStorageRoot)",
+          "type": "string"
+        },
+        "checksums_validated": {
+          "description": "If the checksums for the moab object have previously been validated by caller (boolean/int as string)",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "true",
+                "True",
+                "TRUE",
+                "nil",
+                "1",
+                "on",
+                "false",
+                "False",
+                "FALSE"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "incoming_version",
+        "incoming_size",
+        "storage_location"
+      ]
+    },
+    "CatalogOptionsWithDruid": {
+      "allOf": [
+        {
+          "$ref": "#/components/schemas/CatalogOptions"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "druid": {
+              "$ref": "#/components/schemas/Druid"
+            }
+          },
+          "required": [
+            "druid"
+          ]
+        }
+      ]
+    },
+    "ContentDiff": {
+      "description": "A diff between given and existing content metadata (XML)",
+      "type": "object",
+      "properties": {
+        "objectId": {
+          "$ref": "#/components/schemas/Druid"
+        },
+        "differenceCount": {
+          "type": "string",
+          "example": "2"
+        },
+        "basis": {
+          "type": "string",
+          "example": "v1-contentMetadata-all"
+        },
+        "other": {
+          "type": "string",
+          "example": "new-contentMetadata-all"
+        },
+        "reportDatetime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "fileGroupDifference": {
+          "type": "object",
+          "properties": {
+            "groupId": {
+              "type": "string"
+            },
+            "differenceCount": {
+              "type": "string"
+            },
+            "identical": {
+              "type": "string"
+            },
+            "copyadded": {
+              "type": "string"
+            },
+            "copydeleted": {
+              "type": "string"
+            },
+            "renamed": {
+              "type": "string"
+            },
+            "modified": {
+              "type": "string"
+            },
+            "added": {
+              "type": "string"
+            },
+            "deleted": {
+              "type": "string"
+            },
+            "subset": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "change": {
+                    "type": "string"
+                  },
+                  "count": {
+                    "type": "string"
+                  },
+                  "file": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "change": {
+                          "type": "string"
+                        },
+                        "basisPath": {
+                          "type": "string"
+                        },
+                        "otherPath": {
+                          "type": "string"
+                        },
+                        "fileSignature": {
+                          "type": "object",
+                          "properties": {
+                            "size": {
+                              "type": "string"
+                            },
+                            "md5": {
+                              "type": "string"
+                            },
+                            "sha1": {
+                              "type": "string"
+                            },
+                            "sha256": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "object_id",
+        "difference_count",
+        "basis",
+        "other",
+        "report_datetime"
+      ]
+    },
+    "ChecksumsForObject": {
+      "description": "A representation of all files and checksums for a single object",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "example": "eric-smith-dissertation.pdf"
+          },
+          "md5": {
+            "type": "string",
+            "example": "aead2f6f734355c59af2d5b2689e4fb3"
+          },
+          "sha1": {
+            "type": "string",
+            "example": "22dc6464e25dc9a7d600b1de6e3848bf63970595"
+          },
+          "sha256": {
+            "type": "string",
+            "example": "e49957d53fb2a46e3652f4d399bd14d019600cf496b98d11ebcdf2d10a8ffd2f"
+          },
+          "filesize": {
+            "type": "integer",
+            "example": 1000217
+          }
+        },
+        "required": [
+          "filename",
+          "md5",
+          "sha1",
+          "sha256",
+          "filesize"
+        ]
+      }
+    },
+    "PreservedObject": {
+      "description": "A preserved object instance",
+      "type": "object",
+      "properties": {
+        "druid": {
+          "$ref": "#/components/schemas/Druid"
+        },
+        "current_version": {
+          "type": "integer",
+          "example": 13
+        },
+        "ok_on_local_storage": {
+          "description": "True if the files for the object on local storage (as represented by the  MoabRecord) are not in an error state",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "druid",
+        "current_version",
+        "ok_on_local_storage"
+      ]
+    },
+    "AuditResult": {
+      "description": "A single audit result",
+      "type": "object"
+    },
+    "AuditResultsResponse": {
+      "description": "Audit results response",
+      "type": "object",
+      "properties": {
+        "druid": {
+          "$ref": "#/components/schemas/Druid"
+        },
+        "result_array": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/AuditResult"
+          }
+        }
+      },
+      "required": [
+        "druid",
+        "result_array"
+      ]
+    }
+  }
+}

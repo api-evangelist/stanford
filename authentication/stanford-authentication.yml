@@ -1,0 +1,129 @@
+name: Stanford University — authentication
+description: >-
+  How access is established across Stanford's institution-operated API surfaces. Stanford runs
+  four distinct authentication regimes rather than one developer-portal key: an open/anonymous
+  tier for library discovery data, a bearer-token tier for the Stanford Digital Repository
+  backends, an x509 client-certificate tier for the MaIS Registry, and campus SSO (Shibboleth
+  SAML 2.0 / OIDC) for everything a human logs into. No public self-service key issuance exists
+  for any of them; every credentialed surface is requested through a Stanford support workflow.
+generated: '2026-08-19'
+modified: '2026-08-19'
+method: derived
+source: >-
+  Derived from openapi/_original/*.yml (components.securitySchemes + security), from the live
+  Shibboleth metadata at https://idp.stanford.edu/metadata.xml, and from the credential language
+  on https://uit.stanford.edu/developers/apis and https://uit.stanford.edu/service/ai-api-gateway.
+x-operator: institution
+mechanisms:
+  - id: anonymous-public
+    name: Open / no credential
+    type: none
+    method: probed
+    source: live 200 responses, 2026-08-19
+    applies_to:
+      - Stanford Libraries PURL API
+      - Stanford Libraries IIIF API
+      - Stanford Libraries Library Hours API
+      - ExploreCourses XML query interface
+    evidence:
+      - url: https://purl.stanford.edu/bb157hs6068.xml
+        status: 200
+      - url: https://library-hours.stanford.edu/libraries.json
+        status: 200
+      - url: https://purl.stanford.edu/bb157hs6068/iiif/manifest
+        status: 200
+      - url: https://explorecourses.stanford.edu/search?view=xml-20140630&q=CS106A&academicYear=20242025
+        status: 200
+    note: >-
+      These four answer to an anonymous client with no header of any kind. This is the widest
+      genuinely open API surface Stanford operates.
+  - id: bearer-token
+    name: HTTP bearer token
+    type: http
+    scheme: bearer
+    method: derived
+    source: components.securitySchemes.bearerAuth in the SDR contracts
+    applies_to:
+      - SDR API
+      - DOR Services API
+      - Preservation Catalog HTTP API
+    declared_in:
+      - openapi/_original/stanford-sdr-api-openapi.yml
+      - openapi/_original/stanford-dor-services-api-openapi.yml
+      - openapi/_original/stanford-preservation-catalog-api-openapi.yml
+    issuance: >-
+      Not self-service and not publicly documented. The SDR API contract exposes POST /v1/auth/login,
+      but the services themselves sit on the Stanford internal network — sdr-api-prod.stanford.edu
+      resolves in public DNS and does not answer a public TCP connection.
+    note: >-
+      Contract-declared, deployment-gated. The security scheme is a fact about the published
+      contract, not a claim that a member of the public can obtain a token.
+  - id: no-declared-scheme
+    name: No security scheme declared
+    type: none
+    method: derived
+    source: absence of a security block in the source contracts
+    applies_to:
+      - Technical Metadata API
+      - SURI API
+    note: >-
+      Neither contract declares security. Both are internal SDR backends whose hostnames do not
+      resolve in public DNS (technical-metadata-prod.stanford.edu, sul-suri-prod.stanford.edu are
+      NXDOMAIN), so the absence reflects network placement rather than an open surface. This is a
+      contract-quality gap worth reporting to sul-dlss, not an access route.
+  - id: x509-client-certificate
+    name: x509 client certificate (mutual TLS)
+    type: mutualTLS
+    method: searched
+    source: https://uit.stanford.edu/developers/apis
+    applies_to:
+      - MaIS Registry APIs (Account, Person, Student, CourseClass, Privilege, Workgroup)
+    issuance: >-
+      Certificate signed by the Stanford MaIS team, requested through the UIT developer
+      onboarding checklist. No sandbox, no public base URL, no anonymous tier.
+    evidence:
+      - url: https://uit.stanford.edu/developers/apis
+        status: 200
+      - url: https://uit.stanford.edu/developers/apis/getting-started
+        status: 200
+  - id: api-key
+    name: Issued API key
+    type: apiKey
+    method: searched
+    source: https://uit.stanford.edu/service/ai-api-gateway
+    applies_to:
+      - Stanford AI API Gateway
+    issuance: >-
+      Requested through the ServiceNow catalog; requires a valid Stanford PTA (billing account).
+      Metered and rate-carded — usage is queryable by API key.
+    evidence:
+      - url: https://uit.stanford.edu/service/ai-api-gateway
+        status: 200
+  - id: shibboleth-sso
+    name: Campus SSO — Shibboleth SAML 2.0 and OIDC
+    type: federated
+    method: probed
+    source: https://idp.stanford.edu/metadata.xml
+    applies_to:
+      - CAP / Stanford Profiles API console
+      - AI Playground
+      - Stanford Community of Practice
+    entity_id: https://idp.stanford.edu/
+    protocols:
+      - urn:oasis:names:tc:SAML:2.0:protocol
+      - openid-connect
+    bindings:
+      - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST
+      - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign
+      - urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect
+    sso_endpoint: https://login.stanford.edu/idp/profile/SAML2/POST/SSO
+    oidc_authorize: https://login.stanford.edu/idp/profile/oidc/authorize
+    evidence:
+      - url: https://idp.stanford.edu/metadata.xml
+        status: 200
+      - url: https://aiplayground.stanford.edu/
+        status: 200
+        note: redirects to login.stanford.edu/idp/profile/oidc/authorize
+      - url: https://cap.stanford.edu/cap-api/console
+        status: 303
+        note: redirects to authentication

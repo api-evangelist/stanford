@@ -1,0 +1,63 @@
+name: Stanford University — authorization scopes
+description: >-
+  Scope inventory for Stanford's institution-operated API surfaces. The honest finding is that
+  Stanford declares NO OAuth or fine-grained scopes anywhere in its five first-party contracts:
+  authorization is coarse — a bearer token, a client certificate, or an issued API key grants
+  the whole service. What Stanford does have instead is a privilege model expressed as its own
+  Registry web service, and a Shibboleth attribute release policy at the identity layer.
+generated: '2026-08-19'
+modified: '2026-08-19'
+method: derived
+source: >-
+  openapi/_original/*.yml security + components.securitySchemes (no oauth2 flows present),
+  https://uit.stanford.edu/developers/apis/privilege, https://idp.stanford.edu/metadata.xml
+x-operator: institution
+oauth_scopes:
+  declared: false
+  method: derived
+  note: >-
+    No securityScheme of type oauth2 or openIdConnect appears in any of the five contracts.
+    bearerAuth is declared with `scheme: bearer` and no scope list, so `security: [{bearerAuth: []}]`
+    is authorization at service granularity.
+  checked:
+    - openapi/_original/stanford-sdr-api-openapi.yml
+    - openapi/_original/stanford-dor-services-api-openapi.yml
+    - openapi/_original/stanford-technical-metadata-api-openapi.yml
+    - openapi/_original/stanford-preservation-catalog-api-openapi.yml
+    - openapi/_original/stanford-suri-api-openapi.yml
+authorization_model:
+  - id: mais-privilege-service
+    name: MaIS Registry Privilege API
+    method: searched
+    source: https://uit.stanford.edu/developers/apis/privilege
+    note: >-
+      Stanford externalizes authorization as its own API rather than as scopes on other APIs.
+      The Privilege web service answers "what authority does this person hold", and the
+      Workgroup web service answers "who is in this group" — the two together are Stanford's
+      campus-wide entitlement model. This is an institution-designed pattern, not a vendor's.
+    evidence:
+      - url: https://uit.stanford.edu/developers/apis/privilege
+        status: 200
+      - url: https://uit.stanford.edu/developers/apis/workgroup
+        status: 200
+  - id: shibboleth-attribute-release
+    name: Shibboleth attribute release
+    method: probed
+    source: https://idp.stanford.edu/metadata.xml
+    note: >-
+      At the federation layer, authorization is carried by released SAML attributes scoped to
+      stanford.edu (shibmd:Scope). The metadata declares the IdP side; the attribute release
+      policy itself is not published.
+    evidence:
+      - url: https://idp.stanford.edu/metadata.xml
+        status: 200
+  - id: ai-gateway-key
+    name: AI API Gateway key
+    method: searched
+    source: https://uit.stanford.edu/service/ai-api-gateway
+    note: >-
+      Authorization is per-key and per-PTA (billing account), with usage queryable by key. No
+      scope vocabulary is published; a key is all-or-nothing against the models in the gateway.
+    evidence:
+      - url: https://uit.stanford.edu/service/ai-api-gateway
+        status: 200

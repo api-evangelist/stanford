@@ -1,0 +1,195 @@
+openapi: 3.2.0
+info:
+  description: Preservation Catalog HTTP API
+  version: 1.0.0
+  title: Preservation HTTP Catalog API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://preservation-catalog-{env}-01.stanford.edu
+  description: Production service
+  variables:
+    env:
+      default: prod
+- url: https://preservation-catalog-{env}-01.stanford.edu
+  description: Staging service
+  variables:
+    env:
+      default: stage
+- url: https://preservation-catalog-{env}-01.stanford.edu
+  description: QA service
+  variables:
+    env:
+      default: qa
+security:
+- bearerAuth: []
+tags:
+- name: catalog
+  description: Add and update Moabs in the catalog
+paths:
+  /v1/catalog:
+    post:
+      tags:
+      - catalog
+      summary: Add a new Moab to the catalog for an existing object
+      responses:
+        '201':
+          description: Created new Moab
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditResultsResponse'
+        '409':
+          description: Conflict - Moab already exists
+        '406':
+          description: Invalid arguments passed
+        '500':
+          description: Internal server error
+      requestBody:
+        $ref: '#/components/requestBodies/CatalogOptionsWithDruid'
+  /v1/catalog/{druid}:
+    put:
+      tags:
+      - catalog
+      summary: Update a Moab for an existing object in the catalog for a new version
+      responses:
+        '200':
+          description: Updated Moab
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditResultsResponse'
+        '404':
+          description: Moab not found
+        '406':
+          description: Invalid arguments passed
+        '400':
+          description: Moab version less than what is in catalog
+        '500':
+          description: Internal server error
+      parameters:
+      - name: druid
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Druid'
+      requestBody:
+        $ref: '#/components/requestBodies/CatalogOptions'
+    patch:
+      tags:
+      - catalog
+      summary: Update a Moab for an existing object in the catalog for a new version
+      responses:
+        '200':
+          description: Updated Moab
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditResultsResponse'
+        '404':
+          description: Moab not found
+        '406':
+          description: Invalid arguments passed
+        '400':
+          description: Moab version less than what is in catalog
+        '500':
+          description: Internal server error
+      parameters:
+      - name: druid
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Druid'
+      requestBody:
+        $ref: '#/components/requestBodies/CatalogOptions'
+components:
+  schemas:
+    CatalogOptionsWithDruid:
+      allOf:
+      - $ref: '#/components/schemas/CatalogOptions'
+      - type: object
+        properties:
+          druid:
+            $ref: '#/components/schemas/Druid'
+        required:
+        - druid
+    AuditResultsResponse:
+      description: Audit results response
+      type: object
+      properties:
+        druid:
+          $ref: '#/components/schemas/Druid'
+        result_array:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditResult'
+      required:
+      - druid
+      - result_array
+    CatalogOptions:
+      description: Options for catalog controller endpoint
+      type: object
+      properties:
+        incoming_version:
+          description: Version of the object
+          type: integer
+        incoming_size:
+          description: Size in bytes of the object on disk
+          type: integer
+        storage_location:
+          description: Storage root where the moab object is located (must correspond to a real MoabStorageRoot)
+          type: string
+        checksums_validated:
+          description: If the checksums for the moab object have previously been validated by caller (boolean/int as string)
+          oneOf:
+          - type: boolean
+          - type: string
+            enum:
+            - 'true'
+            - 'True'
+            - 'TRUE'
+            - nil
+            - '1'
+            - 'on'
+            - 'false'
+            - 'False'
+            - 'FALSE'
+      required:
+      - incoming_version
+      - incoming_size
+      - storage_location
+    Druid:
+      description: Digital Repository Unique Identifier (bare or prefixed)
+      type: string
+      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}$
+      example: druid:bc123df4567
+    AuditResult:
+      description: A single audit result
+      type: object
+  requestBodies:
+    CatalogOptions:
+      description: Common options for PUT/POST/PATCH operations to the catalog controller
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: '#/components/schemas/CatalogOptions'
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CatalogOptions'
+    CatalogOptionsWithDruid:
+      description: Common options (plus druid) for PUT/POST/PATCH operations to the catalog controller
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CatalogOptionsWithDruid'
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: '#/components/schemas/CatalogOptionsWithDruid'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

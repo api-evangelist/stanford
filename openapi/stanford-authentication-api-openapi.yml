@@ -1,0 +1,100 @@
+openapi: 3.2.0
+info:
+  description: Stanford Digital Repository API
+  version: 1.0.0
+  title: SDR Authentication API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://sdr-api-{env}.stanford.edu
+  description: Production service
+  variables:
+    env:
+      default: prod
+- url: https://sdr-api-{env}.stanford.edu
+  description: Staging service
+  variables:
+    env:
+      default: stage
+security:
+- bearerAuth: []
+tags:
+- name: authentication
+  description: Authenticate the user
+paths:
+  /v1/auth/login:
+    post:
+      tags:
+      - authentication
+      summary: Retrieve a JSON web token for subsequent requests
+      operationId: authentication#login
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: The access token
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                  exp:
+                    type: string
+                    description: When the token will expire
+                    example: 09-13-2023 23:00
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - email
+              - password
+              properties:
+                email:
+                  description: email address of the user
+                  type: string
+                  format: email
+                password:
+                  description: password of the user
+                  type: string
+                  example: sekr3t!
+  /v1/auth/proxy:
+    post:
+      tags:
+      - authentication
+      summary: Retrieve a JSON web token for a different user
+      operationId: authentication#proxy
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: The access token
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+                  exp:
+                    type: string
+                    description: When the token will expire
+                    example: 09-13-2023 23:00
+      parameters:
+      - in: query
+        name: to
+        description: The email of the user to proxy to
+        required: true
+        schema:
+          type: string
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

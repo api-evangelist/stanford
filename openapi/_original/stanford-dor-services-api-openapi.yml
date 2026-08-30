@@ -1,0 +1,2159 @@
+openapi: 3.1.2
+info:
+  description: Backend API for the Stanford Digital Repository
+  version: 1.0.0
+  title: DOR Services API
+  license:
+    name: Apache 2.0
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+servers:
+  - url: "https://dor-services-{env}.stanford.edu"
+    description: Production service
+    variables:
+      env:
+        default: prod
+  - url: "https://dor-services-{env}.stanford.edu"
+    description: Staging service
+    variables:
+      env:
+        default: stage
+  - url: "https://dor-services-{env}.stanford.edu"
+    description: QA service
+    variables:
+      env:
+        default: qa
+tags:
+  - name: objects
+    description: Digital Repository Objects
+  - name: tags
+    description: Tags
+  - name: integrations
+    description: Integrations with other Systems
+  - name: jobs
+    description: Operations involving background jobs
+  - name: release_tags
+    description: Operations about release tags
+  - name: versions
+    description: Operations about object versions
+  - name: events
+    description: Operations about events
+  - name: files
+    description: Operations about files
+  - name: workspaces
+    description: Operations about workspaces
+  - name: workflows
+    description: Operations about workflows
+paths:
+  /v1/about:
+    get:
+      summary: A healthcheck endpoint
+      responses:
+        "200":
+          description: The status of the service
+  "/v1/background_job_results/{id}":
+    get:
+      tags:
+        - jobs
+      summary: View results of a background job
+      description: Used to allow the application run long-running processes out of the request/response cycle
+      operationId: "background_job_results#show"
+      responses:
+        "200":
+          description: The background job has completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BackgroundJobResultResponse"
+        "202":
+          description: The background job is pending or processing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BackgroundJobResultResponse"
+        "404":
+          description: The background job with the given id was not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: id
+          in: path
+          description: ID of background job result
+          required: true
+          schema:
+            type: integer
+  /v1/virtual_objects:
+    post:
+      tags:
+        - objects
+      summary: Create a virtual object.
+      description: Combines a virtual_object object with constituent objects to create an object like an Atlas (composed of several images)
+      operationId: "virtual_objects#create"
+      responses:
+        "201":
+          description: Virtual merge action started
+          headers:
+            location:
+              description: the status of the action is found at this URI
+              schema:
+                type: string
+                format: uri
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - virtual_objects
+              properties:
+                virtual_objects:
+                  type: array
+                  minItems: 1
+                  items:
+                    $ref: "#/components/schemas/VirtualObjectRequest"
+  "/v1/objects/{id}/publish":
+    post:
+      tags:
+        - objects
+      summary: Publish object to PURL
+      description: ""
+      operationId: "objects#publish"
+      responses:
+        "201":
+          description: Publishing action started
+          headers:
+            location:
+              description: the status of the action is found at this URI
+              schema:
+                type: string
+                format: uri
+      parameters:
+        - name: id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: lane-id
+          in: query
+          schema:
+            $ref: "#/components/schemas/LaneId"
+  "/v1/objects/{id}/accession":
+    post:
+      tags:
+        - objects
+      summary: Start an assembly workflow, optionally opening a version
+      description: ""
+      operationId: "objects#accession"
+      responses:
+        "201":
+          description: Workflow started
+        "409":
+          description: Unable to open version.
+      parameters:
+        - name: id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: workflow
+          in: query
+          description: which workflow should be started
+          required: false
+          schema:
+            type: string
+            default: assemblyWF
+            enum:
+              - assemblyWF
+              - gisAssemblyWF
+        - name: description
+          in: query
+          description: the description of the version change (if versioning is needed)
+          required: true
+          schema:
+            type: string
+          example: "Re-accessioning this object"
+        - name: opening_user_name
+          in: query
+          description: the username of the person creating the version (if versioning is needed)
+          required: false
+          schema:
+            type: string
+          example: "some_sunetid"
+  "/v1/objects/{id}/reindex":
+    post:
+      tags:
+        - integrations
+      summary: Reindex the object in Solr
+      description: ""
+      operationId: "objects#reindex"
+      responses:
+        "204":
+          description: OK
+      parameters:
+        - name: id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+  "/v1/objects/{id}/indexable":
+    post:
+      tags:
+        - integrations
+      summary: Validate the object for indexing in Solr without actually indexing it
+      description: ""
+      operationId: "objects#indexable"
+      parameters:
+        - name: id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            # Note that additionalProperties needs to be set to true to allow id parameter.
+            schema:
+              oneOf:
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO"
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata"
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection"
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata"
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy"
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicyWithMetadata"
+      responses:
+        "204":
+          description: OK
+        "422":
+          description: Index validation has failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+  "/v1/objects/{object_id}/administrative_tags":
+    get:
+      tags:
+        - tags
+      summary: Show administrative tags for an object
+      description: ""
+      operationId: "administrative_tags#show"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AdministrativeTag"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+    post:
+      tags:
+        - tags
+      summary: Create (or replace) one or more administrative tags
+      description: ""
+      operationId: "administrative_tags#create"
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Object not found
+          content:
+            text/plain:
+              schema:
+                type: string
+        "409":
+          description: Request would result in a duplicate tag
+          content:
+            text/plain:
+              schema:
+                type: string
+        "412":
+          description: Provided ETag didn't match the previous version.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+      requestBody:
+        description: one or more administrative tags for an object
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - administrative_tags
+              properties:
+                replace:
+                  type: boolean
+                  default: false
+                administrative_tags:
+                  type: array
+                  minItems: 1
+                  items:
+                    $ref: "#/components/schemas/AdministrativeTag"
+  "/v1/administrative_tags/search":
+    get:
+      tags:
+        - tags
+      summary: Search for existing tags
+      description: "This is useful for doing autocomplete of tags in Argo"
+      operationId: "administrative_tags#search"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+      parameters:
+        - name: q
+          in: query
+          description: The pattern to query for
+          required: true
+          schema:
+            type: string
+  "/v1/objects/{object_id}/administrative_tags/{id}":
+    delete:
+      tags:
+        - tags
+      summary: Delete an administrative tag for an object
+      description: ""
+      operationId: "administrative_tags#destroy"
+      responses:
+        "204":
+          description: Deleted
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Object or tag not found
+          content:
+            text/plain:
+              schema:
+                type: string
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: id
+          in: path
+          description: ID of tag to remove
+          required: true
+          schema:
+            $ref: "#/components/schemas/AdministrativeTagEscaped"
+    put:
+      tags:
+        - tags
+      summary: Update one administrative tag
+      description: ""
+      operationId: "administrative_tags#update (PUT)"
+      responses:
+        "204":
+          description: Updated
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Object or tag not found
+          content:
+            text/plain:
+              schema:
+                type: string
+        "409":
+          description: Request would result in a duplicate tag
+          content:
+            text/plain:
+              schema:
+                type: string
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: id
+          in: path
+          description: ID of tag to replace
+          required: true
+          schema:
+            $ref: "#/components/schemas/AdministrativeTagEscaped"
+      requestBody:
+        description: A replacement administrative tag
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - administrative_tag
+              properties:
+                administrative_tag:
+                  $ref: "#/components/schemas/AdministrativeTag"
+    patch:
+      tags:
+        - tags
+      summary: Update one administrative tag
+      description: ""
+      operationId: "administrative_tags#update (PATCH)"
+      responses:
+        "204":
+          description: Updated
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Object or tag not found
+        "409":
+          description: Request would result in a duplicate tag
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: id
+          in: path
+          description: ID of tag to replace
+          required: true
+          schema:
+            $ref: "#/components/schemas/AdministrativeTagEscaped"
+      requestBody:
+        description: A replacement administrative tag
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - administrative_tag
+              properties:
+                administrative_tag:
+                  $ref: "#/components/schemas/AdministrativeTag"
+  "/v1/objects/{id}/apply_admin_policy_defaults":
+    post:
+      tags:
+        - objects
+      summary: Applies the default values (copyright, use_statement, rights) from the admin policy
+      description: ""
+      operationId: "admin_policy_defaults#apply"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: "The object is not supported for inheritance of APO access defaults because its type is not supported"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+        "422":
+          description: "The object is in a state in which it cannot be modified: it must be either registered or opened for versioning"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+      parameters:
+        - name: id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+  "/v1/objects/{id}/refresh_metadata":
+    post:
+      tags:
+        - integrations
+      summary: Update object metadata with marc from Symphony
+      description: ""
+      operationId: "metadata_refresh#refresh_metadata"
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Catkey not found in Symphony.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Unprocessable entity.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+  "/v1/objects/{object_id}/release_tags":
+    get:
+      tags:
+        - release_tags
+      summary: The release tag log for this object
+      operationId: "release_tags#index"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReleaseTag"
+        "422":
+          description: Unprocessable entity.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: public
+          in: query
+          description: Return all of the tags that apply to this object, from the collection and directly applied
+          required: false
+          schema:
+            type: boolean
+            default: false
+    post:
+      tags:
+        - release_tags
+      summary: Create a new release_tag for this object
+      description: ""
+      operationId: "release_tag#create"
+      responses:
+        "201":
+          description: Created
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: lane-id
+          in: query
+          schema:
+            $ref: "#/components/schemas/LaneId"
+      requestBody:
+        description: release tag to add to the system
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReleaseTag"
+  "/v1/objects/{object_id}/query/collections":
+    get:
+      tags:
+        - objects
+      summary: List the collections that an object belongs to
+      description: ""
+      operationId: "queries#collections"
+      responses:
+        "200":
+          description: OK
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+  "/v1/objects/{object_id}/members":
+    get:
+      tags:
+        - objects
+      summary: List the members of this collection
+      description: ""
+      operationId: "members#index"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  members:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        externalIdentifier:
+                          $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+                        version:
+                          type: integer
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+  "/v1/objects/{id}/solr":
+    get:
+      tags:
+        - objects
+      summary: Show solr document for head version
+      operationId: "objects#solr"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: validate
+          in: query
+          description: Enable or disable validation ofCocina
+          required: false
+          schema:
+            type: boolean
+            default: true
+  "/v1/objects/{object_id}/workspace":
+    post:
+      tags:
+        - workspaces
+      summary: Create a workspace for an object
+      description: ""
+      operationId: "workspaces#create"
+      responses:
+        "200":
+          description: OK
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+  "/v1/objects/{object_id}/workspace/reset":
+    post:
+      tags:
+        - workspaces
+      summary: Resets a workspace for an object
+      description: After an object has been copied to preservation the workspace can be reset. This is called by the reset-workspace step of the accessionWF
+      operationId: "workspaces#reset"
+      responses:
+        "204":
+          description: OK
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: workflow
+          in: query
+          description: which workflow should this be reported to
+          schema:
+            type: string
+            enum:
+              - accessionWF
+              - releaseWF
+          example: releaseWF
+        - name: lane-id
+          in: query
+          schema:
+            $ref: "#/components/schemas/LaneId"
+  "/v1/objects/{object_id}/events":
+    get:
+      tags:
+        - events
+      summary: Return a list of events about this object
+      description: ""
+      operationId: "events#index"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ObjectEvent"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: event_types
+          in: query
+          description: Filter events by type
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+    post:
+      tags:
+        - events
+      summary: Create an event about this object
+      description: ""
+      operationId: "events#create"
+      responses:
+        "201":
+          description: Created
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+      requestBody:
+        description: event to add to the system
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ObjectEvent"
+  "/v1/objects/{object_id}/versions/current":
+    get:
+      tags:
+        - versions
+      summary: Return the current version number for this object
+      description: ""
+      operationId: "versions#current"
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+    delete:
+      tags:
+        - versions
+      summary: Destroys current open version for this object
+      description: ""
+      operationId: "versions#destroy_current"
+      responses:
+        "204":
+          description: Deleted
+        "409":
+          description: Current version is not open
+        "404":
+          description: Object not found
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+  "/v1/objects/{object_id}/versions/status":
+    get:
+      tags:
+        - versions
+      summary: Return the status of the current version for this object
+      description: "The status includes whether the version is open or closed and whether certain workflows are active"
+      operationId: "versions#status"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionStatus"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+  "/v1/objects/{object_id}/versions/current/close":
+    post:
+      tags:
+        - versions
+      summary: Close the currently open version for this object
+      description: ""
+      operationId: "versions#close_current"
+      responses:
+        "200":
+          description: OK
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: start_accession
+          in: query
+          schema:
+            type: boolean
+            default: true
+          required: false
+          description: Indicates if accessionWF should be started after closing the version
+        - name: description
+          in: query
+          description: the description of the version change
+          required: false
+          schema:
+            type: string
+            example: "Re-accessioning this object"
+        - name: user_name
+          in: query
+          description: the username of the person creating the version
+          schema:
+            type: string
+            example: "some_sunetid"
+        - name: user_versions
+          in: query
+          description: Create, update, or do nothing with user versions on close
+          schema:
+            type: string
+            enum:
+              - "none"
+              - "new"
+              - "update"
+              - "update_if_existing"
+        - name: lane-id
+          in: query
+          schema:
+            $ref: "#/components/schemas/LaneId"
+        - name: context
+          in: query
+          description: Optional workflow context to pass to accessionWF.
+          required: false
+          style: deepObject # Serializes the object using bracket notation rather than as a flat JSON string.
+          explode: true # Expands nested properties into separate query parameter key-value pairs.
+          # Together they mean a client sending: { "skipReleaseWF": true, "ocrLanguages": ["Russian"] }
+          # Should encode it as query string: ?context[skipReleaseWF]=true&context[ocrLanguages][]=Russian
+          schema:
+            type: object
+            additionalProperties: true
+  "/v1/objects/{object_id}/versions":
+    get:
+      tags:
+        - versions
+      summary: The version log for this object
+      operationId: "versions#index"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VersionLog"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+    post:
+      tags:
+        - versions
+      summary: Open a new version for this object
+      description: ""
+      operationId: "versions#create"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicyWithMetadata"
+          headers:
+            ETag:
+              schema:
+                type: string
+            Last-Modified:
+              schema:
+                type: string
+            X-Created-At:
+              schema:
+                type: string
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: description
+          in: query
+          description: short description for object version being opened
+          required: true
+          schema:
+            type: string
+          example: "Adding thumbnail"
+        - name: assume_accessioned
+          in: query
+          description: If true, does not check whether object has been accessioned
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: opening_user_name
+          in: query
+          description: username to include in version event
+          required: false
+          schema:
+            type: string
+          example: "some_sunetid"
+  "/v1/objects/{object_id}/versions/{id}":
+    get:
+      tags:
+        - versions
+      summary: Show the cocina for a particular object version
+      operationId: "versions#show"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata"
+        "400":
+          description: The version exists but there is no record of the cocina data.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: The version exists, but the cocina data is not valid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: id
+          in: path
+          description: ID of the version
+          required: true
+          schema:
+            type: string
+  "/v1/objects/{object_id}/versions/{id}/solr":
+    get:
+      tags:
+        - versions
+      summary: Show solr document for a particular object version
+      operationId: "versions#solr"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: id
+          in: path
+          description: ID of the version
+          required: true
+          schema:
+            type: string
+        - name: validate
+          in: query
+          description: Enable or disable validation of version Cocina
+          required: false
+          schema:
+            type: boolean
+            default: true
+  "/v1/objects/{object_id}/user_versions":
+    get:
+      tags:
+        - versions
+      summary: The user version log for this object
+      operationId: "user_versions#index"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserVersionLog"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+    post:
+      tags:
+        - versions
+      summary: Create a user version for this object
+      operationId: "user_versions#create"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserVersion"
+        "422":
+          description: Unprocessable content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+      requestBody:
+        description: user version to add to the system
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                version:
+                  type: integer
+                  description: the number of the object version
+              required:
+                - version
+  "/v1/objects/{object_id}/user_versions/{id}":
+    get:
+      tags:
+        - versions
+      summary: Show the cocina for a particular user version
+      operationId: "user_versions#show"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: The user version exists, but the cocina data is not valid.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: id
+          in: path
+          description: ID of the user version
+          required: true
+          schema:
+            type: integer
+    patch:
+      tags:
+        - versions
+      summary: Update a user version for this object
+      operationId: "user_versions#update"
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserVersion"
+        "422":
+          description: Unprocessable content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: id
+          in: path
+          description: ID of the user version
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: user version to update
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                version:
+                  description: the number of the object version
+                  type: integer
+                withdrawn:
+                  description: whether the version is withdrawn
+                  type: boolean
+  "/v1/objects/{object_id}/user_versions/{id}/solr":
+    get:
+      tags:
+        - versions
+      summary: Show solr document for a particular user version
+      operationId: "user_versions#solr"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: id
+          in: path
+          description: ID of the version
+          required: true
+          schema:
+            type: string
+        - name: validate
+          in: query
+          description: Enable or disable validation of version Cocina
+          required: false
+          schema:
+            type: boolean
+            default: true
+  /v1/objects:
+    post:
+      tags:
+        - objects
+      summary: Register a new object
+      description: |-
+        If 'collection' is provided, the object will be a member of the provided
+        collection.
+
+        Note that the 'source_id' property is required for items but not for
+        collections.
+      operationId: "objects#create"
+      parameters:
+        - in: query
+          name: assign_doi
+          description: If a doi should be assigned to the object
+          schema:
+            type: boolean
+        - in: query
+          name: user_name
+          description: The sunetid of the person making the change
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/RequestDRO"
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/RequestCollection"
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/RequestAdminPolicy"
+      responses:
+        "201":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicyWithMetadata"
+          headers:
+            ETag:
+              schema:
+                type: string
+            Last-Modified:
+              schema:
+                type: string
+            X-Created-At:
+              schema:
+                type: string
+        "400":
+          description: Invalid DOR parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Object not found in DOR
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Object with that sourceId already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Roundtrip validation has failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: Error connecting to Symphony
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "503":
+          description: Service temporarily disabled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /v1/objects/find:
+    get:
+      tags:
+        - objects
+      summary: Finds an object
+      operationId: "objects#find"
+      parameters:
+        - in: query
+          name: sourceId
+          required: true
+          schema:
+            $ref:  "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/SourceId"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata"
+          headers:
+            ETag:
+              schema:
+                type: string
+            Last-Modified:
+              schema:
+                type: string
+            X-Created-At:
+              schema:
+                type: string
+        "404":
+          description: Object not found in DOR
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /v1/objects/find_all:
+    post:
+      tags:
+        - objects
+      summary: Finds multiple objects
+      operationId: "objects#find_all"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                externalIdentifiers:
+                  type: array
+                  items:
+                    $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO"
+                    - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata"
+                    - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection"
+                    - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata"
+                    - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy"
+                    - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicyWithMetadata"
+  /v1/objects/versions/status:
+    post:
+      tags:
+        - versions
+      summary: Finds versions for multiple objects.
+      description: |-
+        This endpoint is used to find the versions for multiple objects. The request body should be an array of druids.
+
+        The response will be an object with the druids as keys and the version status as values.
+
+        If an object is not found, it will not be included in the response.
+      operationId: "versions#batch_status"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              # Using an object instead of array due to https://github.com/interagent/committee/issues/220
+              type: object
+              properties:
+                externalIdentifiers:
+                  type: array
+                  items:
+                    $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: "#/components/schemas/VersionStatus"
+  "/v1/objects/{id}":
+    patch:
+      tags:
+        - objects
+      summary: Update object metadata
+      description: |-
+        Replace the object metadata with the provided metadata.
+
+        The returned Cocina object may differ from the provided Cocina object due to normalization.
+
+        Since we don't presently have a full mapping between cocina JSON and MODS,
+        only the title can be updated in the descriptive metadata.
+      operationId: "objects#update"
+      parameters:
+        - name: id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: event_description
+          in: query
+          description: A description of the change being made to the object
+          required: false
+          schema:
+            type: string
+        - name: user_name
+          in: query
+          description: The sunetid of the person making the change
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            # Note that additionalProperties needs to be set to true to allow id parameter.
+            schema:
+              oneOf:
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO"
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata"
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection"
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata"
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy"
+                - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicyWithMetadata"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicyWithMetadata"
+          headers:
+            ETag:
+              schema:
+                type: string
+            Last-Modified:
+              schema:
+                type: string
+            X-Created-At:
+              schema:
+                type: string
+        "400":
+          description: Invalid DOR parameter
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Object not found in DOR
+        "409":
+          description: Object with that sourceId already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "412":
+          description: Roundtrip validation has failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Server error
+    get:
+      tags:
+        - objects
+      summary: Retrieve the object COCINA metadata
+      description: "Returns a JSON representation (not yet complete) of an object, collection or admin policy."
+      operationId: "objects#show"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy"
+                  - $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicyWithMetadata"
+          headers:
+            ETag:
+              schema:
+                type: string
+            Last-Modified:
+              schema:
+                type: string
+            X-Created-At:
+              schema:
+                type: string
+        "304":
+          description: No change. The client provided an ETag that matches the current state of the item.
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+    head:
+      tags:
+        - objects
+      summary: Retrieve the head for object COCINA metadata
+      operationId: "objects#head"
+      responses:
+        "200":
+          description: OK
+          headers:
+            ETag:
+              schema:
+                type: string
+            Last-Modified:
+              schema:
+                type: string
+            X-Created-At:
+              schema:
+                type: string
+        "422":
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+    delete:
+      tags:
+        - objects
+      summary: Destroys the object
+      description: ""
+      operationId: "objects#destroy"
+      responses:
+        "201":
+          description: Deleted
+        "400":
+          description: Bad request
+        "404":
+          description: Object or tag not found
+        "500":
+          description: Internal Server Error
+      parameters:
+        - name: id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: user_name
+          in: query
+          description: Username of user requesting delete
+          required: false
+          schema:
+            type: string
+  "/v1/workflow_templates":
+    get:
+      tags:
+        - workflows
+      summary: List all workflow templates
+      operationId: "workflow_templates#index"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  "/v1/workflow_templates/{id}":
+    get:
+      tags:
+        - workflows
+      summary: View a workflow template (e.g., its associated processes)
+      operationId: "workflow_templates#show"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        "404":
+          description: Workflow template not found for given ID/name
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: id
+          in: path
+          description: Name of workflow
+          required: true
+          example: accessionWF
+          schema:
+            type: string
+  "/v1/objects/{object_id}/lifecycles":
+    get:
+      tags:
+        - workflows
+      summary: List the lifecycles for this object
+      operationId: "workflow_lifecycles#index"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                type: string
+                example: |
+                  <lifecycle objectId="druid:ct011cv6501">
+                    <milestone date="2010-04-27T11:34:17-0700">registered</milestone>
+                    <milestone date="2010-04-29T10:12:51-0700">inprocess</milestone>
+                    <milestone date="2010-06-15T16:08:58-0700">released</milestone>
+                  </lifecycle>
+        "404":
+          description: Object not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: version
+          in: query
+          description: The version of the object to get the lifecycles for
+          required: false
+          schema:
+            type: integer
+  "/v1/objects/{object_id}/workflows":
+    get:
+      tags:
+        - workflows
+      summary: List the workflows for this object
+      operationId: "workflows#index"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                type: string
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+  "/v1/objects/{object_id}/workflows/{id}":
+    get:
+      tags:
+        - workflows
+      summary: Get the status for a workflow for this object.
+      operationId: "workflow#show"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/xml:
+              schema:
+                type: string
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: id
+          in: path
+          description: Name of the workflow
+          required: true
+          schema:
+            type: string
+    post:
+      tags:
+        - workflows
+      summary: Create a new workflow for this object
+      operationId: "workflow#create"
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: id
+          in: path
+          description: Name of the workflow to create
+          required: true
+          schema:
+            type: string
+        - name: version
+          in: query
+          description: The version of the object to create the workflow for
+          required: true
+          schema:
+            type: integer
+        - name: lane-id
+          in: query
+          schema:
+            $ref: "#/components/schemas/LaneId"
+      requestBody:
+        description: Context for the workflow.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                context:
+                  type: object
+                  additionalProperties: true
+  "/v1/objects/{object_id}/workflows/{id}/skip_all":
+    post:
+      tags:
+        - workflows
+      summary: Skip all processes in a workflow for this object.
+      operationId: "workflow#skip_all"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: id
+          in: path
+          description: Name of the workflow to skip
+          required: true
+          schema:
+            type: string
+        - name: note
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Skipped all processes
+        "404":
+          description: Object or workflow not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  "/v1/objects/{object_id}/workflows/{workflow_id}/processes/{id}":
+    put:
+      tags:
+        - workflows
+      summary: Update a workflow process (step) for this object.
+      operationId: "workflow_processes#update"
+      responses:
+        "204":
+          description: Updated
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Object, workflow, or process not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Expected current status does not match the actual status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+      parameters:
+        - name: object_id
+          in: path
+          description: ID of object
+          required: true
+          schema:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        - name: workflow_id
+          in: path
+          description: Name of the workflow to update
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          description: Name of the workflow step to update (e.g. "shelve")
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  # description: The new status of the process
+                  $ref: "#/components/schemas/WorkflowProcessStatus"
+                current_status:
+                  # description: The expected current status of the process
+                  $ref: "#/components/schemas/WorkflowProcessStatus"
+                elapsed:
+                  type: number
+                lifecycle:
+                  type: string
+                note:
+                  type: string
+                error_text:
+                  type: string
+                error_message:
+                  type: string
+                version:
+                  # description: The version of the object this workflow step belongs to (defaults to the active version)
+                  type: integer
+              required:
+                - status
+components:
+  schemas:
+    ReleaseTag:
+      description: A tag that indicates the item or collection should be released.
+      type: object
+      additionalProperties: true
+      required:
+        - release
+        - what
+      properties:
+        who:
+          description: Who did this release
+          type: string
+          example: petucket
+        what:
+          description: What is being released. This item or the whole collection.
+          type: string
+          enum:
+            - self
+            - collection
+          example: self
+        date:
+          description: When did this action happen
+          type: string
+          format: date-time
+        to:
+          description: What platform is it released to
+          type: string
+          example: Searchworks
+        release:
+          type: boolean
+    AdministrativeTag:
+      type: string
+      pattern: "^.+( : .+)+$"
+      example: "Foo : Bar : Baz"
+    AdministrativeTagEscaped:
+      type: string
+      # allow CGI-escaped and bare colons to allow for differences between local
+      # environments and deployed environments that use Apache & Passenger
+      pattern: '^.+(\+(?:%3A|:)\+.+)+$'
+      example: "Foo+%3A+Bar+%3A+Baz"
+    LaneId:
+      description: Lane for prioritizing the work
+      type: string
+      enum:
+        - "default"
+        - "low"
+        - "high"
+      default: "default"
+    UserVersion:
+      type: object
+      description: "Information about a user version."
+      properties:
+        version:
+          type: integer
+          description: the number of the object version
+        userVersion:
+          type: integer
+          description: the number of the user version
+        withdrawn:
+          type: boolean
+          description: whether the user version is withdrawn
+        withdrawable:
+          type: boolean
+          description: whether the user version can be withdrawn
+        restorable:
+          type: boolean
+          description: whether the user version can be restored
+        head:
+          type: boolean
+          description: whether the user version is the head
+    UserVersionLog:
+      type: object
+      description: "User versions for an object."
+      properties:
+        versions:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserVersion"
+    Version:
+      type: object
+      description: "Similar to the version inventory specified by OCFL: https://ocfl.io/draft/spec/#version-inventory"
+      properties:
+        versionId:
+          type: integer
+          description: the number of the version
+        tag:
+          type: string
+          description: the number of the version
+        message:
+          type: string
+          description: a message that explains what changed
+        cocina:
+          type: boolean
+          description: whether the version has cocina data. (Legacy versions may not have cocina data.)
+    VersionLog:
+      type: object
+      description: "Similar to the version inventory specified by OCFL: https://ocfl.io/draft/spec/#version-inventory"
+      properties:
+        versions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Version"
+    VersionStatus:
+      type: object
+      required:
+        - versionId
+        - open
+        - openable
+        - assembling
+        - accessioning
+        - closeable
+        - discardable
+        - versionDescription
+      properties:
+        versionId:
+          type: integer
+          description: the number of the version
+        open:
+          type: boolean
+          description: whether the version is open
+        openable:
+          type: boolean
+          description: whether the version can be opened
+        assembling:
+          type: boolean
+          description: whether there is an active assembly workflow (not just assemblyWF)
+        accessioning:
+          type: boolean
+          description: whether there is an active accessioningWF workflow
+        closeable:
+          type: boolean
+          description: whether the version can be closed
+        versionDescription:
+          type: string
+          description: a message that explains what changed
+    BackgroundJobResultResponse:
+      type: object
+      properties:
+        output:
+          $ref: "#/components/schemas/ErrorResponse"
+        status:
+          type: string
+          description: the status of the background job
+          enum:
+            - pending
+            - processing
+            - complete
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/Error"
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+          description: "a short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem."
+          example: Invalid Attribute
+        detail:
+          type: string
+          description: a human-readable explanation specific to this occurrence of the problem.
+          example: Title must contain at least three characters.
+        meta:
+          type: object
+          description: used to include non-standard meta-information
+          example: { backtrace: ["where things went wrong"] }
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              example: /data/attributes/title
+    ObjectEvent:
+      type: object
+      required:
+        - event_type
+        - data
+      properties:
+        event_type:
+          description: the type of event
+          type: string
+        data:
+          description: details about the event
+          type: object
+    VirtualObjectRequest:
+      type: object
+      required:
+        - virtual_object_id
+        - constituent_ids
+      properties:
+        virtual_object_id:
+          $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+        constituent_ids:
+          type: array
+          items:
+            $ref: "https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid"
+    WorkflowProcessStatus:
+      type: string
+      enum:
+        - waiting
+        - completed
+        - error
+        - queued
+        - skipped
+        - started
+        - retrying
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []

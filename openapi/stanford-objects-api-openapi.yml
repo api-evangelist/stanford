@@ -1,0 +1,1402 @@
+openapi: 3.2.0
+info:
+  title: Stanford Objects API
+  version: 1.0.0
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  description: 'Operations tagged objects across 3 of this provider''s published API definitions: stanford-dor-services-api-openapi.yml, stanford-preservation-catalog-api-openapi.yml, stanford-sdr-api-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://dor-services-{env}.stanford.edu
+  description: Production service
+  variables:
+    env:
+      default: prod
+- url: https://preservation-catalog-{env}-01.stanford.edu
+  description: Production service
+  variables:
+    env:
+      default: prod
+- url: https://sdr-api-{env}.stanford.edu
+  description: Production service
+  variables:
+    env:
+      default: prod
+security:
+- bearerAuth: []
+tags:
+- name: objects
+  description: Digital Repository Objects
+paths:
+  /v1/virtual_objects:
+    post:
+      tags:
+      - objects
+      summary: Create a virtual object.
+      description: Combines a virtual_object object with constituent objects to create an object like an Atlas (composed of several images)
+      operationId: virtual_objects#create
+      responses:
+        '201':
+          description: Virtual merge action started
+          headers:
+            location:
+              description: the status of the action is found at this URI
+              schema:
+                type: string
+                format: uri
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - virtual_objects
+              properties:
+                virtual_objects:
+                  type: array
+                  minItems: 1
+                  items:
+                    $ref: '#/components/schemas/VirtualObjectRequest'
+    servers:
+    - url: https://dor-services-{env}.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://dor-services-{env}.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://dor-services-{env}.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/objects/{id}/publish:
+    post:
+      tags:
+      - objects
+      summary: Publish object to PURL
+      description: ''
+      operationId: objects#publish
+      responses:
+        '201':
+          description: Publishing action started
+          headers:
+            location:
+              description: the status of the action is found at this URI
+              schema:
+                type: string
+                format: uri
+      parameters:
+      - name: id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: lane-id
+        in: query
+        schema:
+          $ref: '#/components/schemas/LaneId'
+    servers:
+    - url: https://dor-services-{env}.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://dor-services-{env}.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://dor-services-{env}.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/objects/{id}/accession:
+    post:
+      tags:
+      - objects
+      summary: Start an assembly workflow, optionally opening a version
+      description: ''
+      operationId: objects#accession
+      responses:
+        '201':
+          description: Workflow started
+        '409':
+          description: Unable to open version.
+      parameters:
+      - name: id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: workflow
+        in: query
+        description: which workflow should be started
+        required: false
+        schema:
+          type: string
+          default: assemblyWF
+          enum:
+          - assemblyWF
+          - gisAssemblyWF
+      - name: description
+        in: query
+        description: the description of the version change (if versioning is needed)
+        required: true
+        schema:
+          type: string
+        example: Re-accessioning this object
+      - name: opening_user_name
+        in: query
+        description: the username of the person creating the version (if versioning is needed)
+        required: false
+        schema:
+          type: string
+        example: some_sunetid
+    servers:
+    - url: https://dor-services-{env}.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://dor-services-{env}.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://dor-services-{env}.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/objects/{id}/apply_admin_policy_defaults:
+    post:
+      tags:
+      - objects
+      summary: Applies the default values (copyright, use_statement, rights) from the admin policy
+      description: ''
+      operationId: admin_policy_defaults#apply
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: The object is not supported for inheritance of APO access defaults because its type is not supported
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+        '422':
+          description: 'The object is in a state in which it cannot be modified: it must be either registered or opened for versioning'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+      parameters:
+      - name: id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+    servers:
+    - url: https://dor-services-{env}.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://dor-services-{env}.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://dor-services-{env}.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/objects/{object_id}/query/collections:
+    get:
+      tags:
+      - objects
+      summary: List the collections that an object belongs to
+      description: ''
+      operationId: queries#collections
+      responses:
+        '200':
+          description: OK
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+    servers:
+    - url: https://dor-services-{env}.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://dor-services-{env}.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://dor-services-{env}.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/objects/{object_id}/members:
+    get:
+      tags:
+      - objects
+      summary: List the members of this collection
+      description: ''
+      operationId: members#index
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  members:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        externalIdentifier:
+                          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+                        version:
+                          type: integer
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+    servers:
+    - url: https://dor-services-{env}.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://dor-services-{env}.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://dor-services-{env}.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/objects/{id}/solr:
+    get:
+      tags:
+      - objects
+      summary: Show solr document for head version
+      operationId: objects#solr
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: validate
+        in: query
+        description: Enable or disable validation ofCocina
+        required: false
+        schema:
+          type: boolean
+          default: true
+    servers:
+    - url: https://dor-services-{env}.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://dor-services-{env}.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://dor-services-{env}.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/objects:
+    post:
+      tags:
+      - objects
+      summary: Register a new object
+      description: 'If ''collection'' is provided, the object will be a member of the provided
+
+        collection.
+
+
+        Note that the ''source_id'' property is required for items but not for
+
+        collections.'
+      operationId: objects#create
+      parameters:
+      - in: query
+        name: assign_doi
+        description: If a doi should be assigned to the object
+        schema:
+          type: boolean
+      - in: query
+        name: user_name
+        description: The sunetid of the person making the change
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/RequestDRO
+              - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/RequestCollection
+              - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/RequestAdminPolicy
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicyWithMetadata
+          headers:
+            ETag:
+              schema:
+                type: string
+            Last-Modified:
+              schema:
+                type: string
+            X-Created-At:
+              schema:
+                type: string
+        '400':
+          description: Invalid DOR parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Object not found in DOR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Object with that sourceId already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Roundtrip validation has failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '502':
+          description: Error connecting to Symphony
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '503':
+          description: Service temporarily disabled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    servers:
+    - url: https://dor-services-{env}.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://dor-services-{env}.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://dor-services-{env}.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/objects/find:
+    get:
+      tags:
+      - objects
+      summary: Finds an object
+      operationId: objects#find
+      parameters:
+      - in: query
+        name: sourceId
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/SourceId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata
+          headers:
+            ETag:
+              schema:
+                type: string
+            Last-Modified:
+              schema:
+                type: string
+            X-Created-At:
+              schema:
+                type: string
+        '404':
+          description: Object not found in DOR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    servers:
+    - url: https://dor-services-{env}.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://dor-services-{env}.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://dor-services-{env}.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/objects/find_all:
+    post:
+      tags:
+      - objects
+      summary: Finds multiple objects
+      operationId: objects#find_all
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                externalIdentifiers:
+                  type: array
+                  items:
+                    $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                  - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO
+                  - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata
+                  - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection
+                  - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata
+                  - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy
+                  - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicyWithMetadata
+    servers:
+    - url: https://dor-services-{env}.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://dor-services-{env}.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://dor-services-{env}.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/objects/{id}:
+    patch:
+      tags:
+      - objects
+      summary: Update object metadata
+      description: 'Replace the object metadata with the provided metadata.
+
+
+        The returned Cocina object may differ from the provided Cocina object due to normalization.
+
+
+        Since we don''t presently have a full mapping between cocina JSON and MODS,
+
+        only the title can be updated in the descriptive metadata.'
+      operationId: objects#update
+      parameters:
+      - name: id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: event_description
+        in: query
+        description: A description of the change being made to the object
+        required: false
+        schema:
+          type: string
+      - name: user_name
+        in: query
+        description: The sunetid of the person making the change
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO
+              - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata
+              - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection
+              - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata
+              - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy
+              - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicyWithMetadata
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicyWithMetadata
+          headers:
+            ETag:
+              schema:
+                type: string
+            Last-Modified:
+              schema:
+                type: string
+            X-Created-At:
+              schema:
+                type: string
+        '400':
+          description: Invalid DOR parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Object not found in DOR
+        '409':
+          description: Object with that sourceId already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '412':
+          description: Roundtrip validation has failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+    get:
+      tags:
+      - objects
+      summary: Retrieve the object COCINA metadata
+      description: Returns a JSON representation (not yet complete) of an object, collection or admin policy.
+      operationId: objects#show
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicyWithMetadata
+          headers:
+            ETag:
+              schema:
+                type: string
+            Last-Modified:
+              schema:
+                type: string
+            X-Created-At:
+              schema:
+                type: string
+        '304':
+          description: No change. The client provided an ETag that matches the current state of the item.
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+    head:
+      tags:
+      - objects
+      summary: Retrieve the head for object COCINA metadata
+      operationId: objects#head
+      responses:
+        '200':
+          description: OK
+          headers:
+            ETag:
+              schema:
+                type: string
+            Last-Modified:
+              schema:
+                type: string
+            X-Created-At:
+              schema:
+                type: string
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+    delete:
+      tags:
+      - objects
+      summary: Destroys the object
+      description: ''
+      operationId: objects#destroy
+      responses:
+        '201':
+          description: Deleted
+        '400':
+          description: Bad request
+        '404':
+          description: Object or tag not found
+        '500':
+          description: Internal Server Error
+      parameters:
+      - name: id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: user_name
+        in: query
+        description: Username of user requesting delete
+        required: false
+        schema:
+          type: string
+    servers:
+    - url: https://dor-services-{env}.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://dor-services-{env}.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://dor-services-{env}.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/objects/{id}/validate_moab:
+    get:
+      tags:
+      - objects
+      summary: Starts a validate moab job, which does a validation of the on disk Moab, without reference to the preservation-catalog basis
+      responses:
+        '200':
+          description: Job queued
+        '400':
+          description: Bad request (e.g., malformed druid)
+        '423':
+          description: Failed to enqueue the job, likely because it is a duplicate of a job already waiting in the queue. Caller may retry later if appropriate.
+      parameters:
+      - name: id
+        in: path
+        required: true
+        example: druid:bc123df4567
+        schema:
+          $ref: '#/components/schemas/Druid'
+      - name: lane-id
+        in: query
+        schema:
+          description: Lane for prioritizing the work
+          type: string
+          enum:
+          - default
+          - low
+          - high
+          default: default
+    servers:
+    - url: https://preservation-catalog-{env}-01.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://preservation-catalog-{env}-01.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://preservation-catalog-{env}-01.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/objects/{id}/checksum:
+    get:
+      tags:
+      - objects
+      summary: Show the checksums and filesizes for a single object
+      responses:
+        '200':
+          description: Object found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChecksumsForObject'
+        '400':
+          description: Bad request (e.g., malformed druid)
+        '404':
+          description: Object not found
+      parameters:
+      - name: id
+        in: path
+        required: true
+        example: druid:bc123df4567
+        schema:
+          $ref: '#/components/schemas/Druid'
+    servers:
+    - url: https://preservation-catalog-{env}-01.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://preservation-catalog-{env}-01.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://preservation-catalog-{env}-01.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/objects/{id}/file:
+    get:
+      tags:
+      - objects
+      summary: Returns a specific content, metadata, or manifest file for the object.
+      responses:
+        '200':
+          description: OK, returns a file (of whatever type, thus not validated here)
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Version parameter not positive integer or other problem with request params
+        '404':
+          description: Object or file or version not found
+      parameters:
+      - name: id
+        in: path
+        required: true
+        example: druid:bc123df4567
+        schema:
+          $ref: '#/components/schemas/Druid'
+      - name: filepath
+        description: filepath relative to given `category` query argument, which is a directory in the Moab
+        in: query
+        required: true
+        example: manifestInventory.xml
+        schema:
+          type: string
+      - name: category
+        description: category of file to return
+        in: query
+        required: true
+        example: manifest
+        schema:
+          type: string
+          enum:
+          - content
+          - manifest
+          - metadata
+      - name: version
+        in: query
+        required: false
+        example: '9'
+        schema:
+          type:
+          - string
+          - 'null'
+    servers:
+    - url: https://preservation-catalog-{env}-01.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://preservation-catalog-{env}-01.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://preservation-catalog-{env}-01.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/objects/{id}/content_diff:
+    post:
+      tags:
+      - objects
+      summary: Retrieves Moab::FileInventoryDifference model from comparison of passed contentMetadata.xml with latest (or specified) version in Moab for all files (default) or a specified subset.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ContentDiff'
+        '400':
+          description: Version parameter not a positive integer or parameter error raised
+        '500':
+          description: Unable to get content diff
+      parameters:
+      - name: id
+        in: path
+        required: true
+        example: druid:bc123df4567
+        schema:
+          $ref: '#/components/schemas/Druid'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content_metadata:
+                  type: string
+                  description: an XML representation of content metadata
+                version:
+                  example: '9'
+                  type:
+                  - string
+                  - 'null'
+                subset:
+                  example: publish
+                  description: 'subset of files to diff (default: ''all'')'
+                  type:
+                  - string
+                  - 'null'
+                  enum:
+                  - all
+                  - shelve
+                  - publish
+                  - preserve
+              required:
+              - content_metadata
+    servers:
+    - url: https://preservation-catalog-{env}-01.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://preservation-catalog-{env}-01.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+    - url: https://preservation-catalog-{env}-01.stanford.edu
+      description: QA service
+      variables:
+        env:
+          default: qa
+  /v1/resources:
+    post:
+      tags:
+      - objects
+      summary: Creates a new object
+      description: Does registration and accessioning of the object
+      operationId: objects#create
+      responses:
+        '200':
+          description: OK
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL to retrieve background job results.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateObjectResponse'
+      parameters:
+      - in: query
+        name: accession
+        description: If set to true the version will be closed
+        schema:
+          type: boolean
+      - in: query
+        name: priority
+        schema:
+          type: string
+          enum:
+          - default
+          - low
+          - high
+      - in: query
+        name: assign_doi
+        schema:
+          type: boolean
+      - in: query
+        name: user_versions
+        description: Create, update, or do nothing with user versions on close
+        schema:
+          type: string
+          enum:
+          - none
+          - new
+          - update
+      requestBody:
+        description: The metadata for the object
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/RequestDRO
+              - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/RequestCollection
+    servers:
+    - url: https://sdr-api-{env}.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://sdr-api-{env}.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+  /v1/resources/{id}:
+    get:
+      tags:
+      - objects
+      summary: Retrieve the object metadata
+      description: Returns a JSON representation of an object, collection or admin policy.
+      operationId: resources#show
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+    put:
+      tags:
+      - objects
+      summary: Update an existing object
+      description: Does update and re-accessioning of the object
+      operationId: objects#update
+      responses:
+        '200':
+          description: OK
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: URL to retrieve background job results.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateObjectResponse'
+      parameters:
+      - name: id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: accession
+        in: query
+        description: If set to true the version will be closed
+        schema:
+          type: boolean
+      - name: versionDescription
+        in: query
+        schema:
+          type: string
+      - name: user_versions
+        in: query
+        description: Create, update, or do nothing with user versions on close
+        schema:
+          type: string
+          enum:
+          - none
+          - new
+          - update
+      requestBody:
+        description: The metadata for the object
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO
+              - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection
+              - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy
+    servers:
+    - url: https://sdr-api-{env}.stanford.edu
+      description: Production service
+      variables:
+        env:
+          default: prod
+    - url: https://sdr-api-{env}.stanford.edu
+      description: Staging service
+      variables:
+        env:
+          default: stage
+components:
+  schemas:
+    LaneId:
+      description: Lane for prioritizing the work
+      type: string
+      enum:
+      - default
+      - low
+      - high
+      default: default
+    VirtualObjectRequest:
+      type: object
+      required:
+      - virtual_object_id
+      - constituent_ids
+      properties:
+        virtual_object_id:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+        constituent_ids:
+          type: array
+          items:
+            $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+          description: a short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem.
+          example: Invalid Attribute
+        detail:
+          type: string
+          description: a human-readable explanation specific to this occurrence of the problem.
+          example: Title must contain at least three characters.
+        meta:
+          type: object
+          description: used to include non-standard meta-information
+          example:
+            backtrace:
+            - where things went wrong
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              example: /data/attributes/title
+    DruidWithOptionalFormat:
+      description: Digital Repository Unique Identifier (bare or prefixed), with a file extension
+      type: string
+      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}(\.json)?$
+      example: druid:bc123df4567.json
+    ChecksumsForObject:
+      description: A representation of all files and checksums for a single object
+      type: array
+      items:
+        type: object
+        properties:
+          filename:
+            type: string
+            example: eric-smith-dissertation.pdf
+          md5:
+            type: string
+            example: aead2f6f734355c59af2d5b2689e4fb3
+          sha1:
+            type: string
+            example: 22dc6464e25dc9a7d600b1de6e3848bf63970595
+          sha256:
+            type: string
+            example: e49957d53fb2a46e3652f4d399bd14d019600cf496b98d11ebcdf2d10a8ffd2f
+          filesize:
+            type: integer
+            example: 1000217
+        required:
+        - filename
+        - md5
+        - sha1
+        - sha256
+        - filesize
+    ContentDiff:
+      description: A diff between given and existing content metadata (XML)
+      type: object
+      properties:
+        objectId:
+          $ref: '#/components/schemas/Druid'
+        differenceCount:
+          type: string
+          example: '2'
+        basis:
+          type: string
+          example: v1-contentMetadata-all
+        other:
+          type: string
+          example: new-contentMetadata-all
+        reportDatetime:
+          type: string
+          format: date-time
+        fileGroupDifference:
+          type: object
+          properties:
+            groupId:
+              type: string
+            differenceCount:
+              type: string
+            identical:
+              type: string
+            copyadded:
+              type: string
+            copydeleted:
+              type: string
+            renamed:
+              type: string
+            modified:
+              type: string
+            added:
+              type: string
+            deleted:
+              type: string
+            subset:
+              type: array
+              items:
+                type: object
+                properties:
+                  change:
+                    type: string
+                  count:
+                    type: string
+                  file:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        change:
+                          type: string
+                        basisPath:
+                          type: string
+                        otherPath:
+                          type: string
+                        fileSignature:
+                          type: object
+                          properties:
+                            size:
+                              type: string
+                            md5:
+                              type: string
+                            sha1:
+                              type: string
+                            sha256:
+                              type: string
+      required:
+      - object_id
+      - difference_count
+      - basis
+      - other
+      - report_datetime
+    PreservedObject:
+      description: A preserved object instance
+      type: object
+      properties:
+        druid:
+          $ref: '#/components/schemas/Druid'
+        current_version:
+          type: integer
+          example: 13
+        ok_on_local_storage:
+          description: True if the files for the object on local storage (as represented by the  MoabRecord) are not in an error state
+          type: boolean
+      required:
+      - druid
+      - current_version
+      - ok_on_local_storage
+    Druid:
+      description: Digital Repository Unique Identifier (bare or prefixed)
+      type: string
+      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}$
+      example: druid:bc123df4567
+    CreateObjectResponse:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: id for the background job that is processing the create object request
+      required:
+      - jobId
+    Error_2:
+      type: object
+      properties:
+        title:
+          type: string
+          description: a short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem.
+          example: Invalid Attribute
+        detail:
+          type: string
+          description: a human-readable explanation specific to this occurrence of the problem.
+          example: Title must contain at least three characters.
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              example: /data/attributes/title
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+x-refined-from:
+- stanford-dor-services-api-openapi.yml
+- stanford-preservation-catalog-api-openapi.yml
+- stanford-sdr-api-openapi.yml

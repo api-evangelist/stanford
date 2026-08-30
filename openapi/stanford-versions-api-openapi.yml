@@ -1,0 +1,667 @@
+openapi: 3.2.0
+info:
+  description: Backend API for the Stanford Digital Repository
+  version: 1.0.0
+  title: DOR Services Versions API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://dor-services-{env}.stanford.edu
+  description: Production service
+  variables:
+    env:
+      default: prod
+- url: https://dor-services-{env}.stanford.edu
+  description: Staging service
+  variables:
+    env:
+      default: stage
+- url: https://dor-services-{env}.stanford.edu
+  description: QA service
+  variables:
+    env:
+      default: qa
+security:
+- bearerAuth: []
+tags:
+- name: versions
+  description: Operations about object versions
+paths:
+  /v1/objects/{object_id}/versions/current:
+    get:
+      tags:
+      - versions
+      summary: Return the current version number for this object
+      description: ''
+      operationId: versions#current
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+    delete:
+      tags:
+      - versions
+      summary: Destroys current open version for this object
+      description: ''
+      operationId: versions#destroy_current
+      responses:
+        '204':
+          description: Deleted
+        '409':
+          description: Current version is not open
+        '404':
+          description: Object not found
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+  /v1/objects/{object_id}/versions/status:
+    get:
+      tags:
+      - versions
+      summary: Return the status of the current version for this object
+      description: The status includes whether the version is open or closed and whether certain workflows are active
+      operationId: versions#status
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionStatus'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+  /v1/objects/{object_id}/versions/current/close:
+    post:
+      tags:
+      - versions
+      summary: Close the currently open version for this object
+      description: ''
+      operationId: versions#close_current
+      responses:
+        '200':
+          description: OK
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: start_accession
+        in: query
+        schema:
+          type: boolean
+          default: true
+        required: false
+        description: Indicates if accessionWF should be started after closing the version
+      - name: description
+        in: query
+        description: the description of the version change
+        required: false
+        schema:
+          type: string
+          example: Re-accessioning this object
+      - name: user_name
+        in: query
+        description: the username of the person creating the version
+        schema:
+          type: string
+          example: some_sunetid
+      - name: user_versions
+        in: query
+        description: Create, update, or do nothing with user versions on close
+        schema:
+          type: string
+          enum:
+          - none
+          - new
+          - update
+          - update_if_existing
+      - name: lane-id
+        in: query
+        schema:
+          $ref: '#/components/schemas/LaneId'
+      - name: context
+        in: query
+        description: Optional workflow context to pass to accessionWF.
+        required: false
+        style: deepObject
+        explode: true
+        schema:
+          type: object
+          additionalProperties: true
+  /v1/objects/{object_id}/versions:
+    get:
+      tags:
+      - versions
+      summary: The version log for this object
+      operationId: versions#index
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionLog'
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+    post:
+      tags:
+      - versions
+      summary: Open a new version for this object
+      description: ''
+      operationId: versions#create
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/CollectionWithMetadata
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicyWithMetadata
+          headers:
+            ETag:
+              schema:
+                type: string
+            Last-Modified:
+              schema:
+                type: string
+            X-Created-At:
+              schema:
+                type: string
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: description
+        in: query
+        description: short description for object version being opened
+        required: true
+        schema:
+          type: string
+        example: Adding thumbnail
+      - name: assume_accessioned
+        in: query
+        description: If true, does not check whether object has been accessioned
+        required: false
+        schema:
+          type: boolean
+          default: false
+      - name: opening_user_name
+        in: query
+        description: username to include in version event
+        required: false
+        schema:
+          type: string
+        example: some_sunetid
+  /v1/objects/{object_id}/versions/{id}:
+    get:
+      tags:
+      - versions
+      summary: Show the cocina for a particular object version
+      operationId: versions#show
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata
+        '400':
+          description: The version exists but there is no record of the cocina data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: The version exists, but the cocina data is not valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: id
+        in: path
+        description: ID of the version
+        required: true
+        schema:
+          type: string
+  /v1/objects/{object_id}/versions/{id}/solr:
+    get:
+      tags:
+      - versions
+      summary: Show solr document for a particular object version
+      operationId: versions#solr
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: id
+        in: path
+        description: ID of the version
+        required: true
+        schema:
+          type: string
+      - name: validate
+        in: query
+        description: Enable or disable validation of version Cocina
+        required: false
+        schema:
+          type: boolean
+          default: true
+  /v1/objects/{object_id}/user_versions:
+    get:
+      tags:
+      - versions
+      summary: The user version log for this object
+      operationId: user_versions#index
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserVersionLog'
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+    post:
+      tags:
+      - versions
+      summary: Create a user version for this object
+      operationId: user_versions#create
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserVersion'
+        '422':
+          description: Unprocessable content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      requestBody:
+        description: user version to add to the system
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                version:
+                  type: integer
+                  description: the number of the object version
+              required:
+              - version
+  /v1/objects/{object_id}/user_versions/{id}:
+    get:
+      tags:
+      - versions
+      summary: Show the cocina for a particular user version
+      operationId: user_versions#show
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO
+                - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DROWithMetadata
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: The user version exists, but the cocina data is not valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: id
+        in: path
+        description: ID of the user version
+        required: true
+        schema:
+          type: integer
+    patch:
+      tags:
+      - versions
+      summary: Update a user version for this object
+      operationId: user_versions#update
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserVersion'
+        '422':
+          description: Unprocessable content
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: id
+        in: path
+        description: ID of the user version
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        description: user version to update
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                version:
+                  description: the number of the object version
+                  type: integer
+                withdrawn:
+                  description: whether the version is withdrawn
+                  type: boolean
+  /v1/objects/{object_id}/user_versions/{id}/solr:
+    get:
+      tags:
+      - versions
+      summary: Show solr document for a particular user version
+      operationId: user_versions#solr
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: id
+        in: path
+        description: ID of the version
+        required: true
+        schema:
+          type: string
+      - name: validate
+        in: query
+        description: Enable or disable validation of version Cocina
+        required: false
+        schema:
+          type: boolean
+          default: true
+  /v1/objects/versions/status:
+    post:
+      tags:
+      - versions
+      summary: Finds versions for multiple objects.
+      description: 'This endpoint is used to find the versions for multiple objects. The request body should be an array of druids.
+
+
+        The response will be an object with the druids as keys and the version status as values.
+
+
+        If an object is not found, it will not be included in the response.'
+      operationId: versions#batch_status
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                externalIdentifiers:
+                  type: array
+                  items:
+                    $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/VersionStatus'
+components:
+  schemas:
+    UserVersion:
+      type: object
+      description: Information about a user version.
+      properties:
+        version:
+          type: integer
+          description: the number of the object version
+        userVersion:
+          type: integer
+          description: the number of the user version
+        withdrawn:
+          type: boolean
+          description: whether the user version is withdrawn
+        withdrawable:
+          type: boolean
+          description: whether the user version can be withdrawn
+        restorable:
+          type: boolean
+          description: whether the user version can be restored
+        head:
+          type: boolean
+          description: whether the user version is the head
+    LaneId:
+      description: Lane for prioritizing the work
+      type: string
+      enum:
+      - default
+      - low
+      - high
+      default: default
+    VersionLog:
+      type: object
+      description: 'Similar to the version inventory specified by OCFL: https://ocfl.io/draft/spec/#version-inventory'
+      properties:
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Version'
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    UserVersionLog:
+      type: object
+      description: User versions for an object.
+      properties:
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserVersion'
+    Error:
+      type: object
+      properties:
+        title:
+          type: string
+          description: a short, human-readable summary of the problem that SHOULD NOT change from occurrence to occurrence of the problem.
+          example: Invalid Attribute
+        detail:
+          type: string
+          description: a human-readable explanation specific to this occurrence of the problem.
+          example: Title must contain at least three characters.
+        meta:
+          type: object
+          description: used to include non-standard meta-information
+          example:
+            backtrace:
+            - where things went wrong
+        source:
+          type: object
+          properties:
+            pointer:
+              type: string
+              example: /data/attributes/title
+    VersionStatus:
+      type: object
+      required:
+      - versionId
+      - open
+      - openable
+      - assembling
+      - accessioning
+      - closeable
+      - discardable
+      - versionDescription
+      properties:
+        versionId:
+          type: integer
+          description: the number of the version
+        open:
+          type: boolean
+          description: whether the version is open
+        openable:
+          type: boolean
+          description: whether the version can be opened
+        assembling:
+          type: boolean
+          description: whether there is an active assembly workflow (not just assemblyWF)
+        accessioning:
+          type: boolean
+          description: whether there is an active accessioningWF workflow
+        closeable:
+          type: boolean
+          description: whether the version can be closed
+        versionDescription:
+          type: string
+          description: a message that explains what changed
+    Version:
+      type: object
+      description: 'Similar to the version inventory specified by OCFL: https://ocfl.io/draft/spec/#version-inventory'
+      properties:
+        versionId:
+          type: integer
+          description: the number of the version
+        tag:
+          type: string
+          description: the number of the version
+        message:
+          type: string
+          description: a message that explains what changed
+        cocina:
+          type: boolean
+          description: whether the version has cocina data. (Legacy versions may not have cocina data.)
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

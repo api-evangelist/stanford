@@ -1,0 +1,92 @@
+openapi: 3.2.0
+info:
+  description: Backend API for the Stanford Digital Repository
+  version: 1.0.0
+  title: DOR Services Workspaces API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://dor-services-{env}.stanford.edu
+  description: Production service
+  variables:
+    env:
+      default: prod
+- url: https://dor-services-{env}.stanford.edu
+  description: Staging service
+  variables:
+    env:
+      default: stage
+- url: https://dor-services-{env}.stanford.edu
+  description: QA service
+  variables:
+    env:
+      default: qa
+security:
+- bearerAuth: []
+tags:
+- name: workspaces
+  description: Operations about workspaces
+paths:
+  /v1/objects/{object_id}/workspace:
+    post:
+      tags:
+      - workspaces
+      summary: Create a workspace for an object
+      description: ''
+      operationId: workspaces#create
+      responses:
+        '200':
+          description: OK
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+  /v1/objects/{object_id}/workspace/reset:
+    post:
+      tags:
+      - workspaces
+      summary: Resets a workspace for an object
+      description: After an object has been copied to preservation the workspace can be reset. This is called by the reset-workspace step of the accessionWF
+      operationId: workspaces#reset
+      responses:
+        '204':
+          description: OK
+      parameters:
+      - name: object_id
+        in: path
+        description: ID of object
+        required: true
+        schema:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+      - name: workflow
+        in: query
+        description: which workflow should this be reported to
+        schema:
+          type: string
+          enum:
+          - accessionWF
+          - releaseWF
+        example: releaseWF
+      - name: lane-id
+        in: query
+        schema:
+          $ref: '#/components/schemas/LaneId'
+components:
+  schemas:
+    LaneId:
+      description: Lane for prioritizing the work
+      type: string
+      enum:
+      - default
+      - low
+      - high
+      default: default
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

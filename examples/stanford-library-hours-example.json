@@ -1,0 +1,77 @@
+{
+  "x-generated": "2026-08-19",
+  "x-method": "probed",
+  "x-operator": "institution",
+  "x-source": "https://library-hours.stanford.edu/libraries.json",
+  "x-probed": {
+    "url": "https://library-hours.stanford.edu/libraries.json",
+    "status": 200,
+    "content_type": "application/json"
+  },
+  "x-note": "Live capture, truncated to the first library and three hour records. Stanford Libraries' Library Hours API answers in JSON:API shape (data[].type/id/attributes).",
+  "data": [
+    {
+      "type": "libraries",
+      "id": "green",
+      "attributes": {
+        "name": "Cecil H. Green Library",
+        "primary_location": "green/library-circulation",
+        "hours": [
+          {
+            "day": "2026-08-16",
+            "weekday": "Sunday",
+            "opens_at": "2026-08-16T12:00:00.000-07:00",
+            "closes_at": "2026-08-16T21:00:00.000-07:00",
+            "closed": false
+          },
+          {
+            "day": "2026-08-17",
+            "weekday": "Monday",
+            "opens_at": "2026-08-17T08:00:00.000-07:00",
+            "closes_at": "2026-08-17T21:00:00.000-07:00",
+            "closed": false
+          },
+          {
+            "day": "2026-08-18",
+            "weekday": "Tuesday",
+            "opens_at": "2026-08-18T08:00:00.000-07:00",
+            "closes_at": "2026-08-18T21:00:00.000-07:00",
+            "closed": false
+          }
+        ]
+      },
+      "relationships": {
+        "locations": {
+          "data": [
+            {
+              "type": "locations",
+              "id": "green/library-circulation"
+            },
+            {
+              "type": "locations",
+              "id": "green/all-night"
+            },
+            {
+              "type": "locations",
+              "id": "green/media-microtext-center"
+            },
+            {
+              "type": "locations",
+              "id": "green/reference"
+            },
+            {
+              "type": "locations",
+              "id": "green/evening-reference"
+            }
+          ],
+          "links": {
+            "related": "https://library-hours.stanford.edu/libraries/green/locations"
+          }
+        }
+      },
+      "links": {
+        "self": "https://library-hours.stanford.edu/libraries/green"
+      }
+    }
+  ]
+}

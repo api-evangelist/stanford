@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:shibmd="urn:mace:shibboleth:metadata:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="FARM_idp-prod20260816T0000" entityID="https://idp.stanford.edu/" validUntil="2027-08-16T00:00:10Z"><ds:Signature>
+<ds:SignedInfo>
+<ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+<ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+<ds:Reference URI="#FARM_idp-prod20260816T0000">
+<ds:Transforms>
+<ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
+<ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+</ds:Transforms>
+<ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
+<ds:DigestValue>8ZMmw5kKqWlmv3ReopT2T3JQr8FTqjEH8ksQICF4mZs=</ds:DigestValue>
+</ds:Reference>
+</ds:SignedInfo>
+<ds:SignatureValue>
+QatGjaQ/7ldTv+lyTIvxwp7CkiQIi2k0LowZO/ashf4RYQRqjSTRBQDPcZ2u4yXQx5vSHJ9OLjML
+WALe0HQBI2zJH/5hfAo/4Xkt+52HrCPnanN3P71MeEouEzfV45Q7zeIFMFzwV8+e3J3E7/2P/7gC
+c2Yqx0BbpnzcJeJZb2hbt8xg8a3L07cnDCKJqhlkOidraHJSG5MMdhuaKI1qSypi8mNU0WV1QuP9
+rwhyEAwddWtb5jg8ZcSUQLZKq0GhDTPQcxm0aMNPgaAVLFwt6L2KwefhNimzaGEGLcC4K7ba+byJ
+c2gVA+zT6g+cPZv0N2tedjjBA5bKAT5vK1251sGPdR9wGiXy5+XhAMvgpTlhOFSbMmSzRVPTYjm1
+9Mi0mCYXBOQXSNiQ1PAbdCd50wxCa33TEUvu2sOSk60cesqWntw26+5vexbNws3N4LFucUavRocl
+/Ga99Cf1aok5S/6uWAsqU1+B70bPRTM4XdDZC9AZI3XdVEqedoj1rMs8Di7yj2/QgTYJdr5BkQhX
+gWBv7f4sRlAlsuTpb/5BxNJc5WhCVmPP4CvSbmPk+xwlxsDeocjqKCYmtJwF1OrPIjt1sD1nr9zL
+G4i+vIXZ+mzw82bWFJhxkVwK0lzAdr9O1TeY5mKxFkhoeDZFoQMy9/e9d/Qh3ux7TTal+Ug8XR0=
+</ds:SignatureValue>
+<ds:KeyInfo>
+<ds:KeyValue>
+<ds:RSAKeyValue>
+<ds:Modulus>
+pyT+/vtm2LPnVp78vCW1baIMmlyzsykq1EGgBCkT2utKWpzK1Q+FdILCE6YVp+Wwj2hBsLcveuYw
+gtSj0xu5gBrfR2u0VlmUKhfhJLtVwXNswmp4zI1yMou23/k5R7glFrHe25VhpwU1XlawfxrEdYQU
+THeZ3XNarLlmO8igFZxU2Nv1SQn9y+JD6H8UDdDC0huQHLC4RKXGnFe7OqSsxvxVnKXk8YQliDT8
+kwbkm4P8aOUU94SOwnMo63Nt3dzxhkHz5/um2Kl8EJO/IdM5CT4aghaziE8YD/TDeAItY+xN3LXU
+TdtlttCtUKBAypUB9U+fEPsxH2C0emc9b19UHLlq8HTwUvVWYXrVQOjZ9MMCvplUZkyGT67NzfJ7
+x3XVyjqYT1J06M6VBe1gwJX/wE6We5Q1xUtKW+4jXHYck5Ui7Ue9SddkllP25ekRM+5bLEGwd+Us
+vwlBBgkDFlTLwBYN1pAO9qMvVlNAjOpOAEuqvGlRZVB/mzYaO6W7aRcQEawTfmK5ipG5bOmslwOV
+6540tC9LK9zt+pbGUJmQb0eLW0bUFVJaIBULdFBiFxA+whMNK+1ijlf+wgVko4VzFjBH6qulMJqa
+meuwBKUB1yqjBEx1PbJIR0t+Pg2KJZY3q7oEpiweVLZCUhI4swxchMF4L2B3jEjdVpwEbvEdfhM=
+</ds:Modulus>
+<ds:Exponent>AQAB</ds:Exponent>
+</ds:RSAKeyValue>
+</ds:KeyValue>
+<ds:X509Data>
+<ds:X509Certificate>
+MIIFzDCCA7QCCQCor0kez96IHDANBgkqhkiG9w0BAQsFADCBpzELMAkGA1UEBhMCVVMxEzARBgNV
+BAgMCkNhbGlmb3JuaWExETAPBgNVBAcMCFN0YW5mb3JkMRwwGgYDVQQKDBNTdGFuZm9yZCBVbml2
+ZXJzaXR5MTMwMQYDVQQLDCpBdXRoZW50aWNhdGlvbiBhbmQgQ29sbGFib3JhdGlvbiBTb2x1dGlv
+bnMxHTAbBgNVBAMMFG1kLXNpZ24uc3RhbmZvcmQuZWR1MB4XDTE4MDQxOTE3NTY1OVoXDTM4MDQx
+NDE3NTY1OVowgacxCzAJBgNVBAYTAlVTMRMwEQYDVQQIDApDYWxpZm9ybmlhMREwDwYDVQQHDAhT
+dGFuZm9yZDEcMBoGA1UECgwTU3RhbmZvcmQgVW5pdmVyc2l0eTEzMDEGA1UECwwqQXV0aGVudGlj
+YXRpb24gYW5kIENvbGxhYm9yYXRpb24gU29sdXRpb25zMR0wGwYDVQQDDBRtZC1zaWduLnN0YW5m
+b3JkLmVkdTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAKck/v77Ztiz51ae/LwltW2i
+DJpcs7MpKtRBoAQpE9rrSlqcytUPhXSCwhOmFaflsI9oQbC3L3rmMILUo9MbuYAa30drtFZZlCoX
+4SS7VcFzbMJqeMyNcjKLtt/5OUe4JRax3tuVYacFNV5WsH8axHWEFEx3md1zWqy5ZjvIoBWcVNjb
+9UkJ/cviQ+h/FA3QwtIbkBywuESlxpxXuzqkrMb8VZyl5PGEJYg0/JMG5JuD/GjlFPeEjsJzKOtz
+bd3c8YZB8+f7ptipfBCTvyHTOQk+GoIWs4hPGA/0w3gCLWPsTdy11E3bZbbQrVCgQMqVAfVPnxD7
+MR9gtHpnPW9fVBy5avB08FL1VmF61UDo2fTDAr6ZVGZMhk+uzc3ye8d11co6mE9SdOjOlQXtYMCV
+/8BOlnuUNcVLSlvuI1x2HJOVIu1HvUnXZJZT9uXpETPuWyxBsHflLL8JQQYJAxZUy8AWDdaQDvaj
+L1ZTQIzqTgBLqrxpUWVQf5s2Gjulu2kXEBGsE35iuYqRuWzprJcDleueNLQvSyvc7fqWxlCZkG9H
+i1tG1BVSWiAVC3RQYhcQPsITDSvtYo5X/sIFZKOFcxYwR+qrpTCampnrsASlAdcqowRMdT2ySEdL
+fj4NiiWWN6u6BKYsHlS2QlISOLMMXITBeC9gd4xI3VacBG7xHX4TAgMBAAEwDQYJKoZIhvcNAQEL
+BQADggIBACNEUcRnNyxf4P/t1Sym2NPu+j1GRmSVU34I7BwoZ1Bw0iqJ5sG48bQccxt6CRdn28Fv
+IZ5wAszpPiFE/x4h2OZXctYaPMfZso8Q0ugXTV9PgRrek5cMP8c3YVlQ5X1K/tMWEjCfyVzqylm3
+2Nfy0wW2PRgGfsCNFaHfHqtElhOnwr1twzeH816Y1/ComnjkPk1PYhLuijY53NS93KcayiIIcyBg
+I1qTpjbB88vSOwIqgtW34UoolemjJww6gOx1gG8FWpaN5j+9NSCwQw0zF0cITXkkhD9Kugm1G+AT
+DM2RzDDyBPBaTjBcOK4eDXGe/nhHZs4+Iz/16hu67SiouKNN8Z/i/w0sjWYJIj4H8a23txPZRX8X
+XvCc6ojfege89Sxq0Iw2dfoJUYYJkh5k+s/lBQze88Qlw83lbTbobtBmZbIp30yf5CKe7XW1DzuI
+cfhngdzlXvShDsjQjCbxF5gw4ptRDafiXcY/mX/5ajw6DjvlwSBNN+CbOyne7xzWoaaGruLEziGu
+baf8Xakm4oiEP4ziFe5b9QqqTBdjc4vsqj1SSuLxLLmYBSXWTSSXM7mja79eqy6d/uuZa2xVr+dS
+QjJMNUoRcNdbgIHWZ1mu18p5/lwa2xx6uCmdZLszuvUqTphjMWTJXklrhwnkw/y0BjLpk0yiaNmK
+mBMf1mPZ
+</ds:X509Certificate>
+</ds:X509Data>
+</ds:KeyInfo>
+</ds:Signature>
+
+    <IDPSSODescriptor protocolSupportEnumeration="urn:mace:shibboleth:1.0 urn:oasis:names:tc:SAML:1.1:protocol urn:oasis:names:tc:SAML:2.0:protocol">
+
+        <Extensions>
+            <shibmd:Scope regexp="false">stanford.edu</shibmd:Scope>
+	    <mdui:UIInfo xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui">
+	      <mdui:DisplayName xml:lang="en">Stanford University Login</mdui:DisplayName>
+	      <mdui:InformationURL xml:lang="en">http://saml.stanford.edu/</mdui:InformationURL>
+	      <mdui:Logo height="60" width="80" xml:lang="en">https://login.stanford.edu/logo.png</mdui:Logo>
+	    </mdui:UIInfo>
+        </Extensions>
+
+        <KeyDescriptor>
+          <ds:KeyInfo>
+          <ds:X509Data>
+          <!-- Serial No. 11060104959520713497, expires on Sun Apr 10 16:31:00 2033 GMT -->
+          <ds:X509Certificate>
+MIIDnzCCAoegAwIBAgIJAJl9YtyaxKsZMA0GCSqGSIb3DQEBBQUAMGYxCzAJBgNV
+BAYTAlVTMRMwEQYDVQQIDApDYWxpZm9ybmlhMREwDwYDVQQHDAhTdGFuZm9yZDEU
+MBIGA1UECgwLSVQgU2VydmljZXMxGTAXBgNVBAMMEGlkcC5zdGFuZm9yZC5lZHUw
+HhcNMTMwNDEwMTYzMTAwWhcNMzMwNDEwMTYzMTAwWjBmMQswCQYDVQQGEwJVUzET
+MBEGA1UECAwKQ2FsaWZvcm5pYTERMA8GA1UEBwwIU3RhbmZvcmQxFDASBgNVBAoM
+C0lUIFNlcnZpY2VzMRkwFwYDVQQDDBBpZHAuc3RhbmZvcmQuZWR1MIIBIjANBgkq
+hkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAm6466Bd6mDwNOR2qZZy1WRZdjyrG2/xW
+amGEMekg38fyuoSCIiMcgeA9UIUbiRCpAN87yI9HPcgDEdrmCK3Ena3J2MdFZbRE
+b6fdRt76K+0FSl/CnyW9xaIlAhldXKbsgUDei3Xf/9P8H9Dxkk+PWd9Ha1RZ9Viz
+dOLe2S2iDKc1CJg2kdGQTuQu6mUEGrB9WJmrLHJS7GkGDqy96owFjRL/p0i9KBdR
+kgWG+GFHWkxzeNQ99yrQra3+C9FQXa/xLCdOY+BGOsAG7ej4094NZXRNTyXui4jR
+WCm2GVdIVl7YB9++XSntS7zQEJ9QBnC1D4bS0tljMfdOGAvdUuJY7QIDAQABo1Aw
+TjAdBgNVHQ4EFgQUJk4zcQ4JupEcAp0gEkob4YRDkckwHwYDVR0jBBgwFoAUJk4z
+cQ4JupEcAp0gEkob4YRDkckwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOC
+AQEAKvf9AO4+osJZOmkv6AVhNPm6JKoBSm9dr9NhwpSS5fpro6PrIjDZDLh/L5d/
++CQTDzuVsw3xwDtlm89lrzbqw5rSa2+ghJk79ijysSC0zOcD6ka9c17zauCNmFx9
+lj9iddUw3aYHQcQRktWL8pvI2WCY6lTU+ouNM+owStya7umZ9rBdjg/fQerzaQxF
+T0yV3tYEonL3hXMzSqZxWirwsyZ0TnhWJsgEnqqG9tCFAcFu2p+glwXn1WL2GCRv
+BfuJMPzg7ZB419AEoeYnLktqAWiU+ISnVfbwFOJ+OM/O7VQOeHDm2AeYcwo12CAc
+4GC9KWTs3QtS3GREPKYDlHRNxQ==
+          </ds:X509Certificate>
+          </ds:X509Data>
+          </ds:KeyInfo>
+        </KeyDescriptor>
+
+        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://login.stanford.edu/idp/profile/Logout"/>
+        <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+        <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</NameIDFormat>
+
+        <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://login.stanford.edu/idp/profile/SAML2/POST/SSO"/>
+
+        <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST-SimpleSign" Location="https://login.stanford.edu/idp/profile/SAML2/POST-SimpleSign/SSO"/>
+
+        <SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="https://login.stanford.edu/idp/profile/SAML2/Redirect/SSO"/>
+
+    </IDPSSODescriptor>
+
+
+</EntityDescriptor>

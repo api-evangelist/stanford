@@ -1,0 +1,108 @@
+x-name: Stanford University — governance rules
+description: >-
+  A Spectral-style ruleset written against Stanford's OWN five first-party OpenAPI contracts.
+  Every rule below was authored because a real Stanford contract fails or passes it — this is a
+  governance read of sul-dlss's published specs, not a generic style guide. It uses built-in
+  Spectral functions only.
+x-generated: '2026-08-19'
+x-modified: '2026-08-19'
+x-method: derived
+x-source: openapi/_original/*.yml
+x-operator: institution
+x-note: >-
+  Provided as an assessment artifact. It is API Evangelist's ruleset applied to Stanford's
+  contracts; Stanford does not publish a governance ruleset of its own, and none is claimed here.
+x-findings_summary:
+  contracts_evaluated: 5
+  total_operations: 76
+  passes:
+    - Every contract declares a license (Apache 2.0) — rare in this cohort.
+    - Every server URL is under stanford.edu; no placeholder or example host anywhere.
+    - Three of five share an identical JSON:API error envelope.
+    - Every operation carries an operationId.
+  failures:
+    - No contract declares info.contact — no route back to the team that owns it.
+    - No contract declares info.termsOfService.
+    - Technical Metadata and SURI declare no security scheme at all.
+    - 403 is never declared, though three contracts require a bearer token.
+    - No operation carries request or response examples.
+    - No `deprecated` flag anywhere, and no Sunset/Deprecation header documented.
+x-ruleset:
+  extends: []
+  rules:
+    info-contact-required:
+      description: >-
+        A contract must name a contact. All five Stanford contracts fail this; a consumer who
+        finds sul-dlss/dor-services-app has no in-contract route to its maintainers.
+      severity: error
+      given: $.info
+      then:
+        field: contact
+        function: truthy
+    info-license-required:
+      description: Passes on all five — Apache 2.0 is declared consistently.
+      severity: error
+      given: $.info
+      then:
+        field: license
+        function: truthy
+    info-terms-of-service:
+      description: Fails on all five. No usage terms are bound to any Stanford contract.
+      severity: warn
+      given: $.info
+      then:
+        field: termsOfService
+        function: truthy
+    server-must-be-institution-host:
+      description: >-
+        Every server URL must sit under stanford.edu. This is the operator-axis rule for a
+        university, and it is the reason these five contracts are saved in this repo at all.
+        Passes on all five.
+      severity: error
+      given: $.servers[*].url
+      then:
+        function: pattern
+        functionOptions:
+          match: '^https://[a-z0-9.-]*stanford\.edu'
+    operation-operation-id:
+      description: Passes across all 76 operations.
+      severity: error
+      given: $.paths[*][get,put,post,delete,patch]
+      then:
+        field: operationId
+        function: truthy
+    operation-description:
+      description: Partially fails — several DOR Services operations carry a summary but no description.
+      severity: warn
+      given: $.paths[*][get,put,post,delete,patch]
+      then:
+        field: description
+        function: truthy
+    operation-must-declare-403:
+      description: >-
+        An operation protected by a security requirement must document the forbidden case.
+        Fails on every secured operation in the SDR, DOR Services and Preservation Catalog
+        contracts — 401 appears exactly once across the whole estate, 403 never.
+      severity: warn
+      given: $.paths[*][get,put,post,delete,patch].responses
+      then:
+        field: '403'
+        function: truthy
+    security-scheme-declared:
+      description: >-
+        Fails for Technical Metadata and SURI, which declare no securitySchemes. Both sit on
+        hosts that do not resolve in public DNS, so the contract understates a real control.
+      severity: error
+      given: $.components
+      then:
+        field: securitySchemes
+        function: truthy
+    response-examples-present:
+      description: >-
+        Fails everywhere. Not one of the 76 operations carries an example, which is the single
+        largest agent-readiness gap in Stanford's published contracts.
+      severity: warn
+      given: $.paths[*][get,post,put,patch].responses[*].content[*]
+      then:
+        field: examples
+        function: truthy

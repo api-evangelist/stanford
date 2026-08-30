@@ -1,0 +1,43 @@
+openapi: 3.2.0
+info:
+  description: Backend API for the Stanford Digital Repository
+  version: 1.0.0
+  title: DOR Services About API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://dor-services-{env}.stanford.edu
+  description: Production service
+  variables:
+    env:
+      default: prod
+- url: https://dor-services-{env}.stanford.edu
+  description: Staging service
+  variables:
+    env:
+      default: stage
+- url: https://dor-services-{env}.stanford.edu
+  description: QA service
+  variables:
+    env:
+      default: qa
+security:
+- bearerAuth: []
+tags:
+- name: About
+paths:
+  /v1/about:
+    get:
+      summary: A healthcheck endpoint
+      responses:
+        '200':
+          description: The status of the service
+      tags:
+      - About
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

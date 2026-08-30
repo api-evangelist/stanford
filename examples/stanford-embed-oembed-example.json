@@ -1,0 +1,21 @@
+{
+  "x-generated": "2026-08-19",
+  "x-method": "probed",
+  "x-operator": "institution",
+  "x-source": "https://embed.stanford.edu/embed?url=https://purl.stanford.edu/bb157hs6068",
+  "x-probed": {
+    "url": "https://embed.stanford.edu/embed?url=https://purl.stanford.edu/bb157hs6068",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8"
+  },
+  "x-note": "Live oEmbed 1.0 rich response from the SUL Embed Service \u2014 Stanford Libraries' own embed API for Digital Repository objects.",
+  "response": {
+    "type": "rich",
+    "version": "1.0",
+    "provider_name": "SUL Embed Service",
+    "title": "NOUVELLE CARTE DE LA SPHERE POUR FAIRE CONNOITRE LES DIVERS MOUVEMENS DES PLANETES ET LEURS DIVERSES REVOLUTIONS, AVEC DES REMARQUES HISTORIQUES POUR CONDUIRE A CETTE CONNOISSANCE",
+    "height": "31.25rem",
+    "width": null,
+    "html": "<iframe src=\"https://embed.stanford.edu/iframe?url=https://purl.stanford.edu/bb157hs6068&amp;_v=1786984547\" style=\"height: 31.25rem; width: 100%;\" title=\"Image viewer: NOUVELLE CARTE DE LA SPHERE POUR FAIRE CONNOITRE LES DIVERS MOUVEMENS DES PLANETES ET LEURS DIVERSES REVOLUTIONS, AVEC DES REMARQUES HISTORIQUES POUR CONDUIRE A CETTE CONNOISSANCE\" frameborder=\"0\" marginwidth=\"0\" marginheight=\"0\" scrolling=\"no\" allowfullscreen=\"allowfullscreen\" allow=\"clipboard-write\"></iframe>"
+  }
+}
