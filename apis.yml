@@ -359,6 +359,8 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
+  - Authentication
+  tags_raw:
   - authentication
   properties:
   - type: OpenAPI
@@ -399,6 +401,8 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
+  - Catalog
+  tags_raw:
   - catalog
   properties:
   - type: OpenAPI
@@ -439,6 +443,8 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
+  - Event
+  tags_raw:
   - events
   properties:
   - type: OpenAPI
@@ -479,6 +485,8 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
+  - File
+  tags_raw:
   - files
   properties:
   - type: OpenAPI
@@ -519,6 +527,8 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
+  - Identifiers
+  tags_raw:
   - identifiers
   properties:
   - type: OpenAPI
@@ -559,6 +569,8 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
+  - Integration
+  tags_raw:
   - integrations
   properties:
   - type: OpenAPI
@@ -599,6 +611,8 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
+  - Job
+  tags_raw:
   - jobs
   properties:
   - type: OpenAPI
@@ -639,6 +653,8 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
+  - Legacy
+  tags_raw:
   - legacy
   properties:
   - type: OpenAPI
@@ -679,6 +695,8 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
+  - Metadata
+  tags_raw:
   - metadata
   properties:
   - type: OpenAPI
@@ -719,6 +737,8 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
+  - Objects
+  tags_raw:
   - objects
   properties:
   - type: OpenAPI
@@ -758,7 +778,8 @@ apis:
   description: Operations about release tags
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
-  tags:
+  tags: []
+  tags_raw:
   - release_tags
   properties:
   - type: OpenAPI
@@ -799,6 +820,8 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
+  - Tags
+  tags_raw:
   - tags
   properties:
   - type: OpenAPI
@@ -839,6 +862,8 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
+  - Versions
+  tags_raw:
   - versions
   properties:
   - type: OpenAPI
@@ -879,6 +904,8 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
+  - Workflows
+  tags_raw:
   - workflows
   properties:
   - type: OpenAPI
@@ -919,6 +946,8 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
+  - Workspaces
+  tags_raw:
   - workspaces
   properties:
   - type: OpenAPI

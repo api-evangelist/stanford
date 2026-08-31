@@ -5,11 +5,10 @@
       "source": "https://news.stanford.edu/",
       "feed_url": "https://news.stanford.edu/feed/",
       "title": "Stanford News",
-      "saved": 0,
-      "method": "none",
-      "error": "fetch_failed: HTTPError"
+      "saved": 20,
+      "method": "none"
     }
   ],
-  "post_count": 0,
-  "fetched": "2026-08-22T20:08:02Z"
+  "post_count": 20,
+  "fetched": "2026-08-30T22:05:13Z"
 }
