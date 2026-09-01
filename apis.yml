@@ -983,6 +983,9 @@ apis:
   - type: SourceCode
     url: https://github.com/sul-dlss/suri-rails
 common:
+  - type: License
+    name: GPL-2.0
+    url: https://github.com/SU-SWS/cap-api/blob/master/LICENSE
   - type: Website
     url: https://www.stanford.edu/
   - type: DeveloperPortal
