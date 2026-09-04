@@ -47,7 +47,7 @@ accessModel:
     - authentication/stanford-authentication.yml
   generated: '2026-08-19'
   method: probed
-position: Producer
+position: Producing
 access: 1st-Party
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/stanford.png
 url: https://raw.githubusercontent.com/api-evangelist/stanford/refs/heads/main/apis.yml
