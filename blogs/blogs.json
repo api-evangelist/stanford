@@ -5,14 +5,15 @@
       "source": "https://news.stanford.edu/",
       "feed_url": "https://news.stanford.edu/feed/",
       "title": "Stanford News",
-      "saved": 20,
+      "saved": 0,
       "method": "none",
       "nature": "undetermined",
-      "nature_basis": null
+      "nature_basis": null,
+      "error": "fetch_failed: HTTPError"
     }
   ],
   "post_count": 20,
-  "fetched": "2026-08-30T22:05:13Z",
+  "fetched": "2026-09-06T18:58:10Z",
   "feed_nature": "undetermined",
   "feed_nature_basis": null,
   "feed_nature_note": "Whether these posts are the vendor publishing or its support community, decided on the URL path grammar of the saved posts -- not the hostname, which carries both on Khoros, and not author diversity, which flags large vendor blogs as forums. 'undetermined' means undetermined."
