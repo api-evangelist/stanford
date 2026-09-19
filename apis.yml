@@ -245,6 +245,11 @@ apis:
   - Identity Federation
   - SAML
   - Shibboleth
+  - SSO
+  tags_raw:
+  - Identity Federation
+  - SAML
+  - Shibboleth
   - Single Sign-On
   properties:
   - type: Documentation
@@ -263,6 +268,10 @@ apis:
     all Stanford's.
   humanURL: https://uit.stanford.edu/service/ai-api-gateway
   tags:
+  - Artificial Intelligence
+  - AI Gateway
+  - LLM
+  tags_raw:
   - Artificial Intelligence
   - AI Gateway
   - Large Language Models
@@ -946,7 +955,7 @@ apis:
   humanURL: https://api.library.stanford.edu/docs/purl/api/
   baseURL: https://purl.stanford.edu
   tags:
-  - Workspaces
+  - Workspace
   tags_raw:
   - workspaces
   properties:
