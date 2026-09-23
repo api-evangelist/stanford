@@ -10,12 +10,10 @@
     "sameAs": "schema:sameAs",
     "address": "schema:address",
     "CollegeOrUniversity": "schema:CollegeOrUniversity",
-
     "api": "stanford:api",
     "apiName": "schema:name",
     "documentation": "schema:url",
     "baseURL": "stanford:baseURL",
-
     "library": "stanford:library",
     "libraryId": "stanford:libraryId",
     "primaryLocation": "stanford:primaryLocation",
@@ -28,19 +26,33 @@
     "opensAt": "schema:opens",
     "closesAt": "schema:closes",
     "closed": "stanford:closed",
-
     "manifest": "stanford:iiifManifest",
     "purl": "stanford:persistentUrl",
     "metadata": "stanford:metadata",
-
     "course": "stanford:course",
     "courseCatalog": {
       "@id": "schema:hasCourse",
       "@container": "@set"
     },
-
     "profile": "stanford:profile",
-    "person": "schema:Person"
+    "person": "schema:Person",
+    "druid": "stanford:druid",
+    "cocina": "stanford:cocinaVersion",
+    "iiifManifest": {
+      "@id": "stanford:iiifManifest",
+      "@type": "@id"
+    },
+    "entityID": {
+      "@id": "stanford:entityID",
+      "@type": "@id"
+    },
+    "samlMetadata": {
+      "@id": "stanford:samlMetadata",
+      "@type": "@id"
+    },
+    "sunetId": "stanford:sunetId",
+    "workgroup": "stanford:workgroup",
+    "operator": "stanford:operator"
   },
   "@type": "CollegeOrUniversity",
   "@id": "https://www.stanford.edu/",
@@ -59,5 +71,9 @@
     "addressLocality": "Stanford",
     "addressRegion": "CA",
     "addressCountry": "US"
-  }
+  },
+  "x-generated": "2026-08-19",
+  "x-method": "derived",
+  "x-source": "Derived from live Stanford payloads (purl.stanford.edu publicObject, library-hours.stanford.edu JSON:API, purl IIIF manifest, idp.stanford.edu SAML metadata) and the five sul-dlss OpenAPI contracts.",
+  "x-operator": "institution"
 }

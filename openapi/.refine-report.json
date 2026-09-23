@@ -1,0 +1,63 @@
+{
+  "provider": "stanford",
+  "sources": [
+    "_original/stanford-dor-services-api-openapi.yml",
+    "_original/stanford-preservation-catalog-api-openapi.yml",
+    "_original/stanford-sdr-api-openapi.yml",
+    "_original/stanford-suri-api-openapi.yml",
+    "_original/stanford-technical-metadata-api-openapi.yml"
+  ],
+  "outputs": [
+    "stanford-about-api-openapi.yml",
+    "stanford-events-api-openapi.yml",
+    "stanford-integrations-api-openapi.yml",
+    "stanford-jobs-api-openapi.yml",
+    "stanford-objects-api-openapi.yml",
+    "stanford-release-tags-api-openapi.yml",
+    "stanford-tags-api-openapi.yml",
+    "stanford-versions-api-openapi.yml",
+    "stanford-workflows-api-openapi.yml",
+    "stanford-workspaces-api-openapi.yml",
+    "stanford-catalog-api-openapi.yml",
+    "stanford-authentication-api-openapi.yml",
+    "stanford-files-api-openapi.yml",
+    "stanford-identifiers-api-openapi.yml",
+    "stanford-legacy-api-openapi.yml",
+    "stanford-metadata-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (5 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "stanford-dor-services-api-openapi.yml: upgraded openapi 3.1.2 -> OpenAPI 3.2.0",
+    "stanford-dor-services-api-openapi.yml: tagged paths GET /v1/about -> About",
+    "stanford-dor-services-api-openapi.yml: declared missing tag: About",
+    "stanford-preservation-catalog-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "stanford-sdr-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "stanford-sdr-api-openapi.yml: declared missing tag: jobs",
+    "stanford-suri-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "stanford-technical-metadata-api-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "tag 'jobs' spans 2 source specs (stanford-dor-services-api-openapi.yml, stanford-sdr-api-openapi.yml): per-path servers applied",
+    "tag 'objects' spans 3 source specs (stanford-dor-services-api-openapi.yml, stanford-preservation-catalog-api-openapi.yml, stanford-sdr-api-openapi.yml): per-path servers applied",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "stanford-about-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-authentication-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-catalog-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-events-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-files-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-identifiers-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-integrations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-jobs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-legacy-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-metadata-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-objects-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-release-tags-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-tags-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-versions-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-workflows-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "stanford-workspaces-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

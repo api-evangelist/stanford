@@ -25,13 +25,13 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: workflows
+- name: Workflows
   description: Operations about workflows
 paths:
   /v1/workflow_templates:
     get:
       tags:
-      - workflows
+      - Workflows
       summary: List all workflow templates
       operationId: workflow_templates#index
       responses:
@@ -46,7 +46,7 @@ paths:
   /v1/workflow_templates/{id}:
     get:
       tags:
-      - workflows
+      - Workflows
       summary: View a workflow template (e.g., its associated processes)
       operationId: workflow_templates#show
       responses:
@@ -73,7 +73,7 @@ paths:
   /v1/objects/{object_id}/lifecycles:
     get:
       tags:
-      - workflows
+      - Workflows
       summary: List the lifecycles for this object
       operationId: workflow_lifecycles#index
       responses:
@@ -106,7 +106,7 @@ paths:
   /v1/objects/{object_id}/workflows:
     get:
       tags:
-      - workflows
+      - Workflows
       summary: List the workflows for this object
       operationId: workflows#index
       responses:
@@ -126,8 +126,8 @@ paths:
   /v1/objects/{object_id}/workflows/{id}:
     get:
       tags:
-      - workflows
-      summary: Get the status for a workflow for this object.
+      - Workflows
+      summary: Get the status for a workflow for this object
       operationId: workflow#show
       responses:
         '200':
@@ -151,7 +151,7 @@ paths:
           type: string
     post:
       tags:
-      - workflows
+      - Workflows
       summary: Create a new workflow for this object
       operationId: workflow#create
       responses:
@@ -199,8 +199,8 @@ paths:
   /v1/objects/{object_id}/workflows/{id}/skip_all:
     post:
       tags:
-      - workflows
-      summary: Skip all processes in a workflow for this object.
+      - Workflows
+      summary: Skip all processes in a workflow for this object
       operationId: workflow#skip_all
       parameters:
       - name: object_id
@@ -232,8 +232,8 @@ paths:
   /v1/objects/{object_id}/workflows/{workflow_id}/processes/{id}:
     put:
       tags:
-      - workflows
-      summary: Update a workflow process (step) for this object.
+      - Workflows
+      summary: Update a workflow process (step) for this object
       operationId: workflow_processes#update
       responses:
         '204':
@@ -302,21 +302,6 @@ paths:
               - status
 components:
   schemas:
-    LaneId:
-      description: Lane for prioritizing the work
-      type: string
-      enum:
-      - default
-      - low
-      - high
-      default: default
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
     Error:
       type: object
       properties:
@@ -340,6 +325,13 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
     WorkflowProcessStatus:
       type: string
       enum:
@@ -350,6 +342,14 @@ components:
       - skipped
       - started
       - retrying
+    LaneId:
+      description: Lane for prioritizing the work
+      type: string
+      enum:
+      - default
+      - low
+      - high
+      default: default
   securitySchemes:
     bearerAuth:
       type: http

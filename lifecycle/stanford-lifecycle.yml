@@ -1,0 +1,119 @@
+name: Stanford University — API lifecycle and versioning
+description: >-
+  Versioning, deprecation and change posture across Stanford's institution-operated surfaces.
+  Stanford is unusual for a university in that its lifecycle signals are real and machine-visible
+  in two places — the SDR contracts use path versioning, and ExploreCourses returns its own
+  deprecation flag inside every response body — while being entirely absent everywhere else.
+generated: '2026-08-19'
+modified: '2026-08-19'
+method: derived
+source: >-
+  openapi/_original/*.yml (info.version, path prefixes, deprecated flags), a live ExploreCourses
+  response, and the Stanford Libraries system status page.
+x-operator: institution
+versioning:
+  - surface: SDR API
+    scheme: path
+    pattern: /v1/...
+    info_version: 1.0.0
+    method: derived
+    source: openapi/_original/stanford-sdr-api-openapi.yml
+  - surface: DOR Services API
+    scheme: path
+    pattern: /v1/...
+    info_version: 1.0.0
+    spec_version: 3.1.2
+    method: derived
+    source: openapi/_original/stanford-dor-services-api-openapi.yml
+    note: >-
+      The only OpenAPI 3.1 contract in the estate; the other four are 3.0.0. A deliberate
+      upgrade on the largest service (40 paths, 53 operations), not a mixed accident.
+  - surface: Preservation Catalog HTTP API
+    scheme: path
+    info_version: 1.0.0
+    method: derived
+  - surface: Technical Metadata API
+    scheme: path
+    info_version: 1.0.0
+    method: derived
+  - surface: SURI API
+    scheme: path
+    info_version: 1.0.0
+    method: derived
+    note: Declares a `legacy` tag alongside `identifiers` — an in-contract lifecycle signal.
+  - surface: ExploreCourses XML query interface
+    scheme: dated view parameter
+    pattern: '?view=xml-YYYYMMDD'
+    method: probed
+    current_documented: xml-20140630
+    latest_available: '20200810'
+    note: >-
+      The most interesting lifecycle artifact Stanford has. A live request for the widely-used
+      view=xml-20140630 returns <deprecated>true</deprecated> and <latestVersion>20200810</latestVersion>
+      IN THE RESPONSE BODY. The service tells its own consumers they are on a deprecated
+      version — six years after the successor shipped — and it does so machine-readably.
+    evidence:
+      - url: https://explorecourses.stanford.edu/search?view=xml-20140630&q=CS106A&academicYear=20242025
+        status: 200
+        location: '<deprecated>true</deprecated> and <latestVersion>20200810</latestVersion>'
+  - surface: IIIF Presentation
+    scheme: standard version
+    method: probed
+    note: >-
+      Presentation 2.1 is served at /iiif/manifest. Stanford's own documentation describes v3 as
+      alpha. Version is carried by the @context IRI, per the IIIF specification.
+    evidence:
+      - url: https://purl.stanford.edu/bb157hs6068/iiif/manifest
+        status: 200
+        location: '"@context": "http://iiif.io/api/presentation/2/context.json"'
+  - surface: Library Hours
+    scheme: none
+    method: probed
+    note: No version segment, no version header, no version field in the JSON:API document.
+  - surface: PURL
+    scheme: none
+    method: probed
+    note: >-
+      No API version, but the publicObject document carries publishVersion="cocina-models/0.127.0"
+      — Stanford versions the METADATA MODEL rather than the endpoint, and states it in the payload.
+    evidence:
+      - url: https://purl.stanford.edu/bb157hs6068.xml
+        status: 200
+        location: '<publicObject publishVersion="cocina-models/0.127.0">'
+deprecation:
+  declared_in_contract:
+    method: derived
+    found: false
+    note: >-
+      No `deprecated: true` flag appears on any operation or parameter in any of the five
+      first-party OpenAPI contracts, and no Sunset or Deprecation header is documented anywhere.
+      The only deprecation signal Stanford publishes is the ExploreCourses response body above,
+      which is outside any contract.
+  policy_published: false
+  note: >-
+    No API deprecation policy, no versioning policy, and no change-notification channel for
+    developers was found on either developer hub. The MaIS developer onboarding checklist does
+    not describe how a Registry API change is communicated to consumers.
+change_communication:
+  - type: Status
+    url: https://library-status.stanford.edu/
+    status: 200
+    method: probed
+    scope: Stanford Libraries systems
+  - type: Status
+    url: https://stanford.service-now.com/services?id=services_status
+    status: 200
+    method: probed
+    scope: University IT services
+  - type: ReleaseNotes
+    surface: AI Playground and AI API Gateway
+    method: searched
+    source: https://uit.stanford.edu/service/ai-api-gateway
+    note: Release notes are published for the AI Gateway — the only Stanford API surface with them.
+  - type: SourceHistory
+    url: https://github.com/sul-dlss
+    status: 200
+    method: probed
+    note: >-
+      For the five SDR contracts, git history on the sul-dlss org IS the changelog. Public, but
+      not a developer-facing change feed.

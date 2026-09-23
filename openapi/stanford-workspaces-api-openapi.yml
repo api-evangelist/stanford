@@ -25,13 +25,13 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: workspaces
+- name: Workspaces
   description: Operations about workspaces
 paths:
   /v1/objects/{object_id}/workspace:
     post:
       tags:
-      - workspaces
+      - Workspaces
       summary: Create a workspace for an object
       description: ''
       operationId: workspaces#create
@@ -48,7 +48,7 @@ paths:
   /v1/objects/{object_id}/workspace/reset:
     post:
       tags:
-      - workspaces
+      - Workspaces
       summary: Resets a workspace for an object
       description: After an object has been copied to preservation the workspace can be reset. This is called by the reset-workspace step of the accessionWF
       operationId: workspaces#reset

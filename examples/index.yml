@@ -1,0 +1,85 @@
+name: Stanford University — example payloads
+description: >-
+  Provenance manifest for every file in examples/. Each entry records how the payload was
+  obtained and WHO OPERATES the surface it came from. All six are live captures from hosts
+  under stanford.edu — none is a vendor's generic response wearing a Stanford base URL, and
+  none is hand-written.
+generated: '2026-08-19'
+method: probed
+source: live capture from Stanford University hosts
+x-operator: institution
+examples:
+  - file: stanford-library-hours-example.json
+    surface: Stanford Libraries Library Hours API
+    url: https://library-hours.stanford.edu/libraries.json
+    status: 200
+    content_type: application/json; charset=utf-8
+    generated: '2026-08-19'
+    method: probed
+    x-operator: institution
+    note: >-
+      JSON:API document. 24 library locations returned live; the capture is truncated to the
+      first library and three hour records.
+  - file: stanford-iiif-manifest-example.json
+    surface: Stanford Libraries IIIF Presentation API
+    url: https://purl.stanford.edu/bb157hs6068/iiif/manifest
+    status: 200
+    content_type: application/ld+json; profile="http://iiif.io/api/presentation/2/context.json"
+    generated: '2026-08-19'
+    method: probed
+    x-operator: institution
+    note: IIIF Presentation 2.1 manifest for a Stanford Digital Repository object.
+  - file: stanford-purl-publicobject-example.xml
+    surface: Stanford Libraries PURL API
+    url: https://purl.stanford.edu/bb157hs6068.xml
+    status: 200
+    content_type: application/xml; charset=utf-8
+    generated: '2026-08-19'
+    method: probed
+    x-operator: institution
+    note: >-
+      publicObject document emitted by cocina-models/0.127.0 — Stanford's own metadata model
+      for the Digital Repository, not a vendor schema.
+  - file: stanford-purl-mods-example.xml
+    surface: Stanford Libraries PURL API (MODS projection)
+    url: https://purl.stanford.edu/bb157hs6068.mods
+    status: 200
+    content_type: application/xml; charset=utf-8
+    generated: '2026-08-19'
+    method: probed
+    x-operator: institution
+    note: MODS 3.7 descriptive metadata for the same druid.
+  - file: stanford-idp-saml-metadata.xml
+    surface: Stanford Identity Provider (Shibboleth) SAML 2.0 metadata
+    url: https://idp.stanford.edu/metadata.xml
+    status: 200
+    content_type: application/xml; charset=utf-8
+    generated: '2026-08-19'
+    method: probed
+    x-operator: institution
+    note: >-
+      Signed EntityDescriptor, entityID https://idp.stanford.edu/, validUntil 2027-08-16.
+      Carries the urn:mace:shibboleth:metadata:1.0 namespace and shibmd:Scope stanford.edu.
+      Saved verbatim — the XML signature is part of the artifact and must not be reformatted.
+  - file: stanford-explorecourses-example.xml
+    surface: ExploreCourses course-data XML query interface (Registrar)
+    url: https://explorecourses.stanford.edu/search?view=xml-20140630&q=CS106A&academicYear=20242025
+    status: 200
+    content_type: text/xml; charset=UTF-8
+    generated: '2026-08-19'
+    method: probed
+    x-operator: institution
+    note: >-
+      One <course> element extracted from a live response. The service itself reports
+      <deprecated>true</deprecated> for view=xml-20140630 and <latestVersion>20200810</latestVersion>.
+  - file: stanford-embed-oembed-example.json
+    surface: Stanford Libraries Embed API
+    url: https://embed.stanford.edu/embed?url=https://purl.stanford.edu/bb157hs6068
+    status: 200
+    content_type: application/json; charset=utf-8
+    generated: '2026-08-19'
+    method: probed
+    x-operator: institution
+    note: >-
+      oEmbed 1.0 rich response, provider_name "SUL Embed Service". Confirms embed.stanford.edu
+      is a working API and not the empty 200 its root path returns.

@@ -25,13 +25,13 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: catalog
+- name: Catalog
   description: Add and update Moabs in the catalog
 paths:
   /v1/catalog:
     post:
       tags:
-      - catalog
+      - Catalog
       summary: Add a new Moab to the catalog for an existing object
       responses:
         '201':
@@ -48,10 +48,12 @@ paths:
           description: Internal server error
       requestBody:
         $ref: '#/components/requestBodies/CatalogOptionsWithDruid'
+      operationId: postV1Catalog
+      x-operation-id-source: derived
   /v1/catalog/{druid}:
     put:
       tags:
-      - catalog
+      - Catalog
       summary: Update a Moab for an existing object in the catalog for a new version
       responses:
         '200':
@@ -76,9 +78,11 @@ paths:
           $ref: '#/components/schemas/Druid'
       requestBody:
         $ref: '#/components/requestBodies/CatalogOptions'
+      operationId: putV1CatalogByDruid
+      x-operation-id-source: derived
     patch:
       tags:
-      - catalog
+      - Catalog
       summary: Update a Moab for an existing object in the catalog for a new version
       responses:
         '200':
@@ -103,17 +107,15 @@ paths:
           $ref: '#/components/schemas/Druid'
       requestBody:
         $ref: '#/components/requestBodies/CatalogOptions'
+      operationId: patchV1CatalogByDruid
+      x-operation-id-source: derived
 components:
   schemas:
-    CatalogOptionsWithDruid:
-      allOf:
-      - $ref: '#/components/schemas/CatalogOptions'
-      - type: object
-        properties:
-          druid:
-            $ref: '#/components/schemas/Druid'
-        required:
-        - druid
+    Druid:
+      description: Digital Repository Unique Identifier (bare or prefixed)
+      type: string
+      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}$
+      example: druid:bc123df4567
     AuditResultsResponse:
       description: Audit results response
       type: object
@@ -127,6 +129,18 @@ components:
       required:
       - druid
       - result_array
+    AuditResult:
+      description: A single audit result
+      type: object
+    CatalogOptionsWithDruid:
+      allOf:
+      - $ref: '#/components/schemas/CatalogOptions'
+      - type: object
+        properties:
+          druid:
+            $ref: '#/components/schemas/Druid'
+        required:
+        - druid
     CatalogOptions:
       description: Options for catalog controller endpoint
       type: object
@@ -159,14 +173,6 @@ components:
       - incoming_version
       - incoming_size
       - storage_location
-    Druid:
-      description: Digital Repository Unique Identifier (bare or prefixed)
-      type: string
-      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}$
-      example: druid:bc123df4567
-    AuditResult:
-      description: A single audit result
-      type: object
   requestBodies:
     CatalogOptions:
       description: Common options for PUT/POST/PATCH operations to the catalog controller

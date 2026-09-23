@@ -1,0 +1,194 @@
+name: Stanford University — domain standard conformance
+description: >-
+  Conformance of Stanford's institution-operated surfaces against the Kin Score `education`
+  regulatory regime's standards[] list. Reward-only: a standard is recorded as `conformant`
+  only where a fetched artifact carries the standard's own namespace, verb, or document
+  structure. Prose claims on a web page are recorded as `claimed`, never as conformance, and
+  standards with no evidence are recorded as `absent` rather than omitted.
+generated: '2026-08-19'
+modified: '2026-08-19'
+method: probed
+source: live artifact fetches from stanford.edu hosts, 2026-08-19
+x-operator: institution
+regime: education
+standards:
+  - id: saml
+    name: SAML 2.0
+    status: conformant
+    method: probed
+    surface: Stanford Identity Provider
+    evidence:
+      - url: https://idp.stanford.edu/metadata.xml
+        status: 200
+        location: >-
+          Root element <EntityDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata">,
+          entityID="https://idp.stanford.edu/", validUntil="2027-08-16T00:00:10Z"
+      - url: https://idp.stanford.edu/metadata.xml
+        status: 200
+        location: >-
+          IDPSSODescriptor with protocolSupportEnumeration, and three SingleSignOnService
+          bindings — HTTP-POST, HTTP-POST-SimpleSign, HTTP-Redirect — at
+          https://login.stanford.edu/idp/profile/SAML2/*/SSO
+    artifact: examples/stanford-idp-saml-metadata.xml
+    note: >-
+      The metadata document is XML-signed (rsa-sha256). This is machine-readable identity
+      federation published by the institution itself, and it is the single strongest
+      institution-operated standard conformance in this repo.
+  - id: shibboleth
+    name: Shibboleth
+    status: conformant
+    method: probed
+    surface: Stanford Identity Provider
+    evidence:
+      - url: https://idp.stanford.edu/metadata.xml
+        status: 200
+        location: 'xmlns:shibmd="urn:mace:shibboleth:metadata:1.0" declared on the root EntityDescriptor'
+      - url: https://idp.stanford.edu/metadata.xml
+        status: 200
+        location: '<shibmd:Scope>stanford.edu</shibmd:Scope> — the federation scope Stanford asserts'
+    artifact: examples/stanford-idp-saml-metadata.xml
+  - id: datacite
+    name: DataCite
+    status: indirect
+    method: derived
+    surface: Stanford Digital Repository
+    evidence:
+      - url: https://raw.githubusercontent.com/sul-dlss/dor-services-app/main/openapi.yml
+        status: 200
+        location: 'POST /v1/objects query parameter `assign_doi` — "If a doi should be assigned to the object"'
+      - url: https://raw.githubusercontent.com/sul-dlss/sdr-api/main/openapi.yml
+        status: 200
+        location: 'POST /v1/resources/{id}/versions/close query parameter `assign_doi`'
+    note: >-
+      NOT scored as conformance. Both first-party SDR contracts expose DOI assignment, but
+      neither names a registration agency, a DataCite schema version, or a DataCite endpoint.
+      DOI minting is an operational fact; DataCite conformance is a contract fact, and the
+      contract does not state it. Recorded so the gap is visible, not to fill the slot.
+  - id: oai-pmh
+    name: OAI-PMH
+    status: absent
+    method: probed
+    evidence:
+      - url: https://purl.stanford.edu/oai?verb=Identify
+        status: 404
+      - url: https://purl.stanford.edu/oai_pmh?verb=Identify
+        status: 404
+      - url: https://sdr.stanford.edu/oai?verb=Identify
+        status: 404
+      - url: https://library.stanford.edu/oai?verb=Identify
+        status: 404
+      - url: https://searchworks.stanford.edu/oai?verb=Identify
+        status: 404
+    note: >-
+      Six candidate verb=Identify probes across the repository, discovery and library hosts all
+      returned 404 with an HTML body. No OAI-PMH provider was found on a Stanford host. This is
+      a genuine absence for one of the standards a research university most often does carry —
+      recorded rather than assumed.
+  - id: orcid
+    name: ORCID
+    status: absent
+    method: probed
+    evidence:
+      - url: https://purl.stanford.edu/bb157hs6068.xml
+        status: 200
+        location: no orcid identifier or namespace present in the cocina publicObject document
+      - url: https://raw.githubusercontent.com/sul-dlss/dor-services-app/main/openapi.yml
+        status: 200
+        location: no orcid term in the contract
+    note: >-
+      The CAP / Stanford Profiles directory is the surface most likely to carry ORCID, and its
+      API is credential-gated (console returns 303 to authentication), so nothing could be read
+      from a response body. Absent on evidence, not disproven.
+  - id: crossref
+    name: Crossref
+    status: absent
+    method: probed
+    evidence:
+      - url: https://raw.githubusercontent.com/sul-dlss/dor-services-app/main/openapi.yml
+        status: 200
+        location: no crossref term in any first-party contract
+  - id: scim
+    name: SCIM
+    status: absent
+    method: searched
+    evidence:
+      - url: https://uit.stanford.edu/developers/apis
+        status: 200
+        location: >-
+          The MaIS Registry exposes Account, Person, Student, CourseClass, Privilege and
+          Workgroup web services — an institution-specific identity model, not SCIM. No
+          /scim/v2 path, ServiceProviderConfig, or SCIM schema URN is documented.
+  - id: lti
+    name: LTI (Learning Tools Interoperability)
+    status: absent
+    method: searched
+    note: >-
+      Stanford's LMS is a vendor tenancy (Canvas). Any LTI conformance there belongs to the
+      vendor's contract, not to an institution-operated Stanford surface, and is deliberately
+      not claimed here.
+  - id: oneroster
+    name: OneRoster
+    status: absent
+    method: searched
+  - id: ed-fi
+    name: Ed-Fi
+    status: absent
+    method: searched
+  - id: caliper
+    name: Caliper Analytics
+    status: absent
+    method: searched
+  - id: qti
+    name: QTI
+    status: absent
+    method: searched
+non_regime_standards_observed:
+  - id: iiif-presentation
+    name: IIIF Presentation API 2.1
+    status: conformant
+    method: probed
+    evidence:
+      - url: https://purl.stanford.edu/bb157hs6068/iiif/manifest
+        status: 200
+        location: '"@context": "http://iiif.io/api/presentation/2/context.json", "@type": "sc:Manifest"'
+    note: >-
+      Not in the education regime standards[] list, so it earns nothing on
+      domain_standard_conformance. Recorded because it is real, machine-readable, and
+      institution-operated — Stanford is a founding IIIF community member and serves manifests
+      from its own host.
+  - id: mods
+    name: MODS 3.7
+    status: conformant
+    method: probed
+    evidence:
+      - url: https://purl.stanford.edu/bb157hs6068.mods
+        status: 200
+        location: '<mods xmlns="http://www.loc.gov/mods/v3" version="3.7">'
+  - id: json-api
+    name: 'JSON:API'
+    status: conformant
+    method: probed
+    evidence:
+      - url: https://library-hours.stanford.edu/libraries.json
+        status: 200
+        location: 'data[].type / data[].id / data[].attributes document shape'
+  - id: openapi
+    name: OpenAPI 3.0 / 3.1
+    status: conformant
+    method: searched
+    evidence:
+      - url: https://raw.githubusercontent.com/sul-dlss/dor-services-app/main/openapi.yml
+        status: 200
+        location: 'openapi: 3.1.2'
+      - url: https://raw.githubusercontent.com/sul-dlss/sdr-api/main/openapi.yml
+        status: 200
+        location: 'openapi: 3.0.0'
+  - id: oembed
+    name: oEmbed 1.0
+    status: conformant
+    method: probed
+    evidence:
+      - url: https://embed.stanford.edu/embed?url=https://purl.stanford.edu/bb157hs6068
+        status: 200
+        location: '"type": "rich", "version": "1.0", "provider_name": "SUL Embed Service"'
+    note: Not an education-regime standard; recorded because it is a real institution-operated conformance.

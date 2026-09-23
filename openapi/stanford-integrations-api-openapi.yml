@@ -25,13 +25,13 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: integrations
+- name: Integrations
   description: Integrations with other Systems
 paths:
   /v1/objects/{id}/reindex:
     post:
       tags:
-      - integrations
+      - Integrations
       summary: Reindex the object in Solr
       description: ''
       operationId: objects#reindex
@@ -48,7 +48,7 @@ paths:
   /v1/objects/{id}/indexable:
     post:
       tags:
-      - integrations
+      - Integrations
       summary: Validate the object for indexing in Solr without actually indexing it
       description: ''
       operationId: objects#indexable
@@ -85,7 +85,7 @@ paths:
   /v1/objects/{id}/refresh_metadata:
     post:
       tags:
-      - integrations
+      - Integrations
       summary: Update object metadata with marc from Symphony
       description: ''
       operationId: metadata_refresh#refresh_metadata
@@ -119,13 +119,6 @@ paths:
           $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
 components:
   schemas:
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
     Error:
       type: object
       properties:
@@ -149,6 +142,13 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     bearerAuth:
       type: http

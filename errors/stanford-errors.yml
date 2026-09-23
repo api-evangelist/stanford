@@ -1,0 +1,103 @@
+name: Stanford University — error semantics
+description: >-
+  Error handling across Stanford's institution-operated API surfaces, read out of the five
+  first-party Stanford Digital Repository contracts and out of live responses from the open
+  library and registrar surfaces. The SDR contracts converge on a shared JSON:API-style error
+  envelope; the open public surfaces do not document errors at all and answer 404 with an HTML
+  page, which is the largest error-semantics gap in this profile.
+generated: '2026-08-19'
+modified: '2026-08-19'
+method: derived
+source: >-
+  openapi/_original/*.yml (responses blocks and components.schemas.Error/ErrorResponse),
+  plus live 404 probes against purl.stanford.edu and api.library.stanford.edu.
+x-operator: institution
+envelope:
+  name: ErrorResponse
+  media_type: application/json
+  method: derived
+  declared_in:
+    - openapi/_original/stanford-sdr-api-openapi.yml
+    - openapi/_original/stanford-dor-services-api-openapi.yml
+    - openapi/_original/stanford-suri-api-openapi.yml
+  shape: >-
+    { "errors": [ { "title": string, "detail": string, "source": { "pointer": ... }, "meta": {} } ] }
+  note: >-
+    A JSON:API errors array. `title` is documented as stable across occurrences and `detail` as
+    occurrence-specific — the distinction most error schemas omit. Three of the five contracts
+    share it verbatim, which is real cross-service consistency inside sul-dlss.
+  gaps:
+    - No machine-readable error `code` field — only human-readable strings.
+    - >-
+      No RFC 9457 (problem+json) content type; the envelope is hand-rolled JSON:API rather than
+      the IETF standard.
+    - >-
+      Preservation Catalog and Technical Metadata declare error status codes but reference no
+      error schema at all.
+status_codes:
+  method: derived
+  source: aggregate of every responses block across the five contracts
+  total_declared: 173
+  observed:
+    - code: '200'
+      count: 54
+    - code: '201'
+      count: 13
+    - code: '202'
+      count: 2
+    - code: '204'
+      count: 9
+    - code: '304'
+      count: 1
+    - code: '400'
+      count: 18
+      meaning: Bad request / malformed parameters
+    - code: '401'
+      count: 1
+      meaning: Unauthorized — declared only by the Technical Metadata API
+    - code: '404'
+      count: 32
+      meaning: Object, druid or version not found
+    - code: '406'
+      count: 3
+      meaning: Not acceptable — Preservation Catalog content negotiation
+    - code: '409'
+      count: 11
+      meaning: Conflict — object already exists or version state disallows the transition
+    - code: '412'
+      count: 2
+      meaning: Precondition failed — optimistic concurrency on object updates
+    - code: '422'
+      count: 10
+      meaning: Unprocessable entity — validation failure against cocina models
+    - code: '423'
+      count: 1
+      meaning: Locked — Preservation Catalog object under an in-flight operation
+    - code: '500'
+      count: 15
+    - code: '502'
+      count: 1
+    - code: '503'
+      count: 1
+  note: >-
+    403 is never declared anywhere in the five contracts, despite three of them requiring a
+    bearer token. An authenticated-but-forbidden case has no documented response.
+public_surfaces:
+  method: probed
+  note: >-
+    The four open surfaces — PURL, IIIF, Library Hours, ExploreCourses — publish no error
+    reference and no machine-readable error body. An unknown identifier returns an HTML 404
+    page, so an agent cannot distinguish "no such object" from "service moved" without parsing
+    markup.
+  evidence:
+    - url: https://purl.stanford.edu/druid:bb157hs6068.xml
+      status: 404
+      body: HTML page
+      note: the `druid:` prefix is not accepted; the bare identifier form is
+    - url: https://api.library.stanford.edu/library-hours/v1/libraries
+      status: 404
+      body: HTML page
+      note: guessed versioned path — the real JSON lives at library-hours.stanford.edu/libraries.json
+    - url: https://api.library.stanford.edu/docs/
+      status: 404
+      body: HTML page

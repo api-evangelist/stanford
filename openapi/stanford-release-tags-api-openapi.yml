@@ -114,14 +114,6 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
-    LaneId:
-      description: Lane for prioritizing the work
-      type: string
-      enum:
-      - default
-      - low
-      - high
-      default: default
     ErrorResponse:
       type: object
       properties:
@@ -158,6 +150,14 @@ components:
           example: Searchworks
         release:
           type: boolean
+    LaneId:
+      description: Lane for prioritizing the work
+      type: string
+      enum:
+      - default
+      - low
+      - high
+      default: default
   securitySchemes:
     bearerAuth:
       type: http

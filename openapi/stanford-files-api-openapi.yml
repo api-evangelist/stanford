@@ -20,13 +20,13 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: files
+- name: Files
   description: upload binary files
 paths:
   /v1/direct_uploads:
     post:
       tags:
-      - files
+      - Files
       summary: Creates a new file resource
       responses:
         '200':
@@ -47,21 +47,13 @@ paths:
                   url: http://localhost:3000/rails/active_storage/disk/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhNMlZvTTJzd2VERTJaWGx6YmpscGRtNWtiWEZxYnpWcVpHWTBaQVk2QmtWVU9oRmpiMjUwWlc1MFgzUjVjR1ZKSWc1MFpYaDBMMmgwYld3R093WlVPaE5qYjI1MFpXNTBYMnhsYm1kMGFHa0NPZ1E2RFdOb1pXTnJjM1Z0U1NJZFFUY3lTWGRwTkVSSFpqZ3dTRGRYVFRSV1NIVlZkejA5QmpzR1ZBPT0iLCJleHAiOiIyMDIwLTAxLTA3VDIzOjIzOjA4LjgyNFoiLCJwdXIiOiJibG9iX3Rva2VuIn19--ae7c0227ed5840f30b3293d2f2b6c8109397527a
                   headers:
                     Content-Type: text/html
+      operationId: postV1DirectUploads
+      x-operation-id-source: derived
   /v1/disk/{encoded_token}:
     put:
       tags:
-      - files
-      summary: 'Upload the binary file resource
-
-        Note that the ''content_type'' of the file posted will be set to ''application/octet-stream'' if not supplied.
-
-        Additional values in ''content_type'' after a semicolon will be removed (e.g. '';v15'' is removed in ''application/text;v15'')
-
-        You may post JSON files with ''content_type'' of ''application/x-stanford-json'' to avoid 400 errors if posted JSON file is invalid.
-
-        The system will automatically change the content type to ''application/json'' after upload.
-
-        '
+      - Files
+      summary: Upload the binary file resource Note that the 'content_type' of the file posted…
       responses:
         '200':
           description: OK
@@ -72,6 +64,8 @@ paths:
         example: eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaDdDVG9JYTJWNVNTSWhhbkk1YlRNeFpuQnJkbmwxZG1zM01qYzFOM042ZURRMWRXYzBOQVk2QmtWVU9oRmpiMjUwWlc1MFgzUjVjR1ZKSWc1MFpYaDBMMmgwYld3R093WlVPaE5qYjI1MFpXNTBYMnhsYm1kMGFHa0Jrem9OWTJobFkydHpkVzFKSWgxemFURXZURE5xVEV0M05GRjVVRGw0UjNaMEsyRlJQVDBHT3daVSIsImV4cCI6IjIwMjAtMDEtMDlUMjE6MzI6NDguNDc1WiIsInB1ciI6ImJsb2JfdG9rZW4ifX0=--da785217f57ab55fe37e8de0a9c26b4d7612c187
         schema:
           type: string
+      operationId: putV1DiskByEncodedToken
+      x-operation-id-source: derived
 components:
   securitySchemes:
     bearerAuth:

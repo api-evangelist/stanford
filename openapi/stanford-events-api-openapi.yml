@@ -25,13 +25,13 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: events
+- name: Events
   description: Operations about events
 paths:
   /v1/objects/{object_id}/events:
     get:
       tags:
-      - events
+      - Events
       summary: Return a list of events about this object
       description: ''
       operationId: events#index
@@ -61,7 +61,7 @@ paths:
             type: string
     post:
       tags:
-      - events
+      - Events
       summary: Create an event about this object
       description: ''
       operationId: events#create

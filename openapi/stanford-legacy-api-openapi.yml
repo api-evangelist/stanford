@@ -23,13 +23,13 @@ servers:
     env:
       default: qa
 tags:
-- name: legacy
+- name: Legacy
   description: Legacy endpoints
 paths:
   /suri2/namespaces/druid/identifiers:
     post:
       tags:
-      - legacy
+      - Legacy
       summary: Create a new identifier
       description: ''
       deprecated: true
@@ -54,6 +54,8 @@ paths:
                 $ref: '#/components/schemas/BareDruid'
         '500':
           description: Internal server error
+      operationId: postSuri2NamespacesDruidIdentifiers
+      x-operation-id-source: derived
 components:
   schemas:
     BareDruid:

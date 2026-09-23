@@ -35,6 +35,8 @@ paths:
           description: The status of the service
       tags:
       - About
+      operationId: getV1About
+      x-operation-id-source: derived
 components:
   securitySchemes:
     bearerAuth:

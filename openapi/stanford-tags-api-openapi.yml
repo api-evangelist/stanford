@@ -25,13 +25,13 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: tags
+- name: Tags
   description: Tags
 paths:
   /v1/objects/{object_id}/administrative_tags:
     get:
       tags:
-      - tags
+      - Tags
       summary: Show administrative tags for an object
       description: ''
       operationId: administrative_tags#show
@@ -53,7 +53,7 @@ paths:
           $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
     post:
       tags:
-      - tags
+      - Tags
       summary: Create (or replace) one or more administrative tags
       description: ''
       operationId: administrative_tags#create
@@ -111,7 +111,7 @@ paths:
   /v1/administrative_tags/search:
     get:
       tags:
-      - tags
+      - Tags
       summary: Search for existing tags
       description: This is useful for doing autocomplete of tags in Argo
       operationId: administrative_tags#search
@@ -134,7 +134,7 @@ paths:
   /v1/objects/{object_id}/administrative_tags/{id}:
     delete:
       tags:
-      - tags
+      - Tags
       summary: Delete an administrative tag for an object
       description: ''
       operationId: administrative_tags#destroy
@@ -168,7 +168,7 @@ paths:
           $ref: '#/components/schemas/AdministrativeTagEscaped'
     put:
       tags:
-      - tags
+      - Tags
       summary: Update one administrative tag
       description: ''
       operationId: administrative_tags#update (PUT)
@@ -219,7 +219,7 @@ paths:
                   $ref: '#/components/schemas/AdministrativeTag'
     patch:
       tags:
-      - tags
+      - Tags
       summary: Update one administrative tag
       description: ''
       operationId: administrative_tags#update (PATCH)
@@ -266,17 +266,6 @@ components:
       type: string
       pattern: ^.+(\+(?:%3A|:)\+.+)+$
       example: Foo+%3A+Bar+%3A+Baz
-    AdministrativeTag:
-      type: string
-      pattern: '^.+( : .+)+$'
-      example: 'Foo : Bar : Baz'
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
     Error:
       type: object
       properties:
@@ -300,6 +289,17 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    AdministrativeTag:
+      type: string
+      pattern: '^.+( : .+)+$'
+      example: 'Foo : Bar : Baz'
   securitySchemes:
     bearerAuth:
       type: http

@@ -25,14 +25,14 @@ servers:
 security:
 - bearerAuth: []
 tags:
-- name: objects
+- name: Objects
   description: Digital Repository Objects
 paths:
   /v1/virtual_objects:
     post:
       tags:
-      - objects
-      summary: Create a virtual object.
+      - Objects
+      summary: Create a virtual object
       description: Combines a virtual_object object with constituent objects to create an object like an Atlas (composed of several images)
       operationId: virtual_objects#create
       responses:
@@ -76,7 +76,7 @@ paths:
   /v1/objects/{id}/publish:
     post:
       tags:
-      - objects
+      - Objects
       summary: Publish object to PURL
       description: ''
       operationId: objects#publish
@@ -119,7 +119,7 @@ paths:
   /v1/objects/{id}/accession:
     post:
       tags:
-      - objects
+      - Objects
       summary: Start an assembly workflow, optionally opening a version
       description: ''
       operationId: objects#accession
@@ -178,8 +178,8 @@ paths:
   /v1/objects/{id}/apply_admin_policy_defaults:
     post:
       tags:
-      - objects
-      summary: Applies the default values (copyright, use_statement, rights) from the admin policy
+      - Objects
+      summary: Applies the default values (copyright, use_statement, rights) from the admin…
       description: ''
       operationId: admin_policy_defaults#apply
       responses:
@@ -227,7 +227,7 @@ paths:
   /v1/objects/{object_id}/query/collections:
     get:
       tags:
-      - objects
+      - Objects
       summary: List the collections that an object belongs to
       description: ''
       operationId: queries#collections
@@ -260,7 +260,7 @@ paths:
   /v1/objects/{object_id}/members:
     get:
       tags:
-      - objects
+      - Objects
       summary: List the members of this collection
       description: ''
       operationId: members#index
@@ -307,7 +307,7 @@ paths:
   /v1/objects/{id}/solr:
     get:
       tags:
-      - objects
+      - Objects
       summary: Show solr document for head version
       operationId: objects#solr
       responses:
@@ -356,7 +356,7 @@ paths:
   /v1/objects:
     post:
       tags:
-      - objects
+      - Objects
       summary: Register a new object
       description: 'If ''collection'' is provided, the object will be a member of the provided
 
@@ -472,7 +472,7 @@ paths:
   /v1/objects/find:
     get:
       tags:
-      - objects
+      - Objects
       summary: Finds an object
       operationId: objects#find
       parameters:
@@ -527,7 +527,7 @@ paths:
   /v1/objects/find_all:
     post:
       tags:
-      - objects
+      - Objects
       summary: Finds multiple objects
       operationId: objects#find_all
       requestBody:
@@ -575,7 +575,7 @@ paths:
   /v1/objects/{id}:
     patch:
       tags:
-      - objects
+      - Objects
       summary: Update object metadata
       description: 'Replace the object metadata with the provided metadata.
 
@@ -665,7 +665,7 @@ paths:
           description: Server error
     get:
       tags:
-      - objects
+      - Objects
       summary: Retrieve the object COCINA metadata
       description: Returns a JSON representation (not yet complete) of an object, collection or admin policy.
       operationId: objects#show
@@ -715,7 +715,7 @@ paths:
           $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
     head:
       tags:
-      - objects
+      - Objects
       summary: Retrieve the head for object COCINA metadata
       operationId: objects#head
       responses:
@@ -752,7 +752,7 @@ paths:
           $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
     delete:
       tags:
-      - objects
+      - Objects
       summary: Destroys the object
       description: ''
       operationId: objects#destroy
@@ -797,8 +797,8 @@ paths:
   /v1/objects/{id}/validate_moab:
     get:
       tags:
-      - objects
-      summary: Starts a validate moab job, which does a validation of the on disk Moab, without reference to the preservation-catalog basis
+      - Objects
+      summary: Starts a validate moab job, which does a validation of the on disk Moab…
       responses:
         '200':
           description: Job queued
@@ -823,6 +823,8 @@ paths:
           - low
           - high
           default: default
+      operationId: getV1ObjectsByIdValidateMoab
+      x-operation-id-source: derived
     servers:
     - url: https://preservation-catalog-{env}-01.stanford.edu
       description: Production service
@@ -842,7 +844,7 @@ paths:
   /v1/objects/{id}/checksum:
     get:
       tags:
-      - objects
+      - Objects
       summary: Show the checksums and filesizes for a single object
       responses:
         '200':
@@ -862,6 +864,8 @@ paths:
         example: druid:bc123df4567
         schema:
           $ref: '#/components/schemas/Druid'
+      operationId: getV1ObjectsByIdChecksum
+      x-operation-id-source: derived
     servers:
     - url: https://preservation-catalog-{env}-01.stanford.edu
       description: Production service
@@ -881,8 +885,8 @@ paths:
   /v1/objects/{id}/file:
     get:
       tags:
-      - objects
-      summary: Returns a specific content, metadata, or manifest file for the object.
+      - Objects
+      summary: Returns a specific content, metadata, or manifest file for the object
       responses:
         '200':
           description: OK, returns a file (of whatever type, thus not validated here)
@@ -928,6 +932,8 @@ paths:
           type:
           - string
           - 'null'
+      operationId: getV1ObjectsByIdFile
+      x-operation-id-source: derived
     servers:
     - url: https://preservation-catalog-{env}-01.stanford.edu
       description: Production service
@@ -947,8 +953,8 @@ paths:
   /v1/objects/{id}/content_diff:
     post:
       tags:
-      - objects
-      summary: Retrieves Moab::FileInventoryDifference model from comparison of passed contentMetadata.xml with latest (or specified) version in Moab for all files (default) or a specified subset.
+      - Objects
+      summary: Retrieves Moab::FileInventoryDifference model from comparison of passed…
       responses:
         '200':
           description: OK
@@ -995,6 +1001,8 @@ paths:
                   - preserve
               required:
               - content_metadata
+      operationId: postV1ObjectsByIdContentDiff
+      x-operation-id-source: derived
     servers:
     - url: https://preservation-catalog-{env}-01.stanford.edu
       description: Production service
@@ -1014,7 +1022,7 @@ paths:
   /v1/resources:
     post:
       tags:
-      - objects
+      - Objects
       summary: Creates a new object
       description: Does registration and accessioning of the object
       operationId: objects#create
@@ -1081,7 +1089,7 @@ paths:
   /v1/resources/{id}:
     get:
       tags:
-      - objects
+      - Objects
       summary: Retrieve the object metadata
       description: Returns a JSON representation of an object, collection or admin policy.
       operationId: resources#show
@@ -1122,7 +1130,7 @@ paths:
           $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
     put:
       tags:
-      - objects
+      - Objects
       summary: Update an existing object
       description: Does update and re-accessioning of the object
       operationId: objects#update
@@ -1187,14 +1195,6 @@ paths:
           default: stage
 components:
   schemas:
-    LaneId:
-      description: Lane for prioritizing the work
-      type: string
-      enum:
-      - default
-      - low
-      - high
-      default: default
     VirtualObjectRequest:
       type: object
       required:
@@ -1207,13 +1207,6 @@ components:
           type: array
           items:
             $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
     Error:
       type: object
       properties:
@@ -1237,38 +1230,47 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+    LaneId:
+      description: Lane for prioritizing the work
+      type: string
+      enum:
+      - default
+      - low
+      - high
+      default: default
+    Druid:
+      description: Digital Repository Unique Identifier (bare or prefixed)
+      type: string
+      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}$
+      example: druid:bc123df4567
+    PreservedObject:
+      description: A preserved object instance
+      type: object
+      properties:
+        druid:
+          $ref: '#/components/schemas/Druid'
+        current_version:
+          type: integer
+          example: 13
+        ok_on_local_storage:
+          description: True if the files for the object on local storage (as represented by the  MoabRecord) are not in an error state
+          type: boolean
+      required:
+      - druid
+      - current_version
+      - ok_on_local_storage
     DruidWithOptionalFormat:
       description: Digital Repository Unique Identifier (bare or prefixed), with a file extension
       type: string
       pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}(\.json)?$
       example: druid:bc123df4567.json
-    ChecksumsForObject:
-      description: A representation of all files and checksums for a single object
-      type: array
-      items:
-        type: object
-        properties:
-          filename:
-            type: string
-            example: eric-smith-dissertation.pdf
-          md5:
-            type: string
-            example: aead2f6f734355c59af2d5b2689e4fb3
-          sha1:
-            type: string
-            example: 22dc6464e25dc9a7d600b1de6e3848bf63970595
-          sha256:
-            type: string
-            example: e49957d53fb2a46e3652f4d399bd14d019600cf496b98d11ebcdf2d10a8ffd2f
-          filesize:
-            type: integer
-            example: 1000217
-        required:
-        - filename
-        - md5
-        - sha1
-        - sha256
-        - filesize
     ContentDiff:
       description: A diff between given and existing content metadata (XML)
       type: object
@@ -1345,35 +1347,33 @@ components:
       - basis
       - other
       - report_datetime
-    PreservedObject:
-      description: A preserved object instance
-      type: object
-      properties:
-        druid:
-          $ref: '#/components/schemas/Druid'
-        current_version:
-          type: integer
-          example: 13
-        ok_on_local_storage:
-          description: True if the files for the object on local storage (as represented by the  MoabRecord) are not in an error state
-          type: boolean
-      required:
-      - druid
-      - current_version
-      - ok_on_local_storage
-    Druid:
-      description: Digital Repository Unique Identifier (bare or prefixed)
-      type: string
-      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}$
-      example: druid:bc123df4567
-    CreateObjectResponse:
-      type: object
-      properties:
-        jobId:
-          type: string
-          description: id for the background job that is processing the create object request
-      required:
-      - jobId
+    ChecksumsForObject:
+      description: A representation of all files and checksums for a single object
+      type: array
+      items:
+        type: object
+        properties:
+          filename:
+            type: string
+            example: eric-smith-dissertation.pdf
+          md5:
+            type: string
+            example: aead2f6f734355c59af2d5b2689e4fb3
+          sha1:
+            type: string
+            example: 22dc6464e25dc9a7d600b1de6e3848bf63970595
+          sha256:
+            type: string
+            example: e49957d53fb2a46e3652f4d399bd14d019600cf496b98d11ebcdf2d10a8ffd2f
+          filesize:
+            type: integer
+            example: 1000217
+        required:
+        - filename
+        - md5
+        - sha1
+        - sha256
+        - filesize
     Error_2:
       type: object
       properties:
@@ -1391,6 +1391,14 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
+    CreateObjectResponse:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: id for the background job that is processing the create object request
+      required:
+      - jobId
   securitySchemes:
     bearerAuth:
       type: http

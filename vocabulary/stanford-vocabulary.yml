@@ -1,0 +1,105 @@
+name: Stanford University — API vocabulary
+description: >-
+  The domain vocabulary Stanford's own surfaces speak, extracted from live payloads and from
+  the five first-party Stanford Digital Repository contracts. This is deliberately Stanford's
+  vocabulary, not a library-sector vocabulary: `druid` and `cocina` are Stanford-coined terms
+  that other institutions do not use, and they are the clearest evidence that the SDR contracts
+  are institution-engineered rather than a vendor platform wearing a Stanford name.
+generated: '2026-08-19'
+modified: '2026-08-19'
+method: derived
+source: >-
+  openapi/_original/*.yml, https://purl.stanford.edu/bb157hs6068.xml,
+  https://library-hours.stanford.edu/libraries.json, ExploreCourses XML, and
+  https://uit.stanford.edu/developers/apis
+x-operator: institution
+terms:
+  - term: druid
+    definition: >-
+      Digital Repository Unique Identifier — Stanford's own opaque object identifier, an
+      eleven-character string of the form bb157hs6068. The primary key of every SDR object and
+      the path segment of every PURL.
+    surfaces: [PURL, IIIF, SDR API, DOR Services API, Preservation Catalog]
+    method: probed
+    evidence: 'https://purl.stanford.edu/bb157hs6068.xml — <objectId>druid:bb157hs6068</objectId>'
+  - term: cocina
+    definition: >-
+      Stanford Libraries' metadata model for repository objects, versioned independently of the
+      APIs that carry it. Emitted as `publishVersion="cocina-models/0.127.0"` on every published
+      object and validated on write by the DOR Services API (422 on model violation).
+    surfaces: [PURL, DOR Services API, SDR API]
+    method: probed
+  - term: PURL
+    definition: >-
+      Persistent URL. https://purl.stanford.edu/{druid} with .xml, .mods and /iiif/manifest
+      projections of the same object.
+    surfaces: [PURL]
+    method: probed
+  - term: SURI
+    definition: >-
+      Stanford Uniform Resource Identifier service — the institution's identifier minting API.
+      Contract declares `identifiers` and `legacy` tags.
+    surfaces: [SURI API]
+    method: derived
+  - term: SDR
+    definition: Stanford Digital Repository — the preservation and access platform the five contracts serve.
+    method: searched
+  - term: administrative tag
+    definition: >-
+      A free-text classification applied to repository objects and searchable for autocomplete
+      in Argo, Stanford's repository administration UI.
+    surfaces: [DOR Services API]
+    method: derived
+  - term: user version
+    definition: >-
+      A citable, human-meaningful version of a repository object, distinct from the internal
+      object version. Exposed as a `user_versions` parameter on version close.
+    surfaces: [SDR API, DOR Services API]
+    method: derived
+  - term: moab
+    definition: Stanford's on-disk preservation object layout, tracked by the Preservation Catalog.
+    surfaces: [Preservation Catalog]
+    method: derived
+  - term: SUNet ID
+    definition: >-
+      Stanford University Network ID — the campus identity a person carries. Appears as the
+      `user_name` audit parameter on DOR write operations and as the subject of Registry
+      Person/Account services.
+    surfaces: [DOR Services API, MaIS Registry]
+    method: derived
+  - term: Registry
+    definition: >-
+      Stanford's consolidated system of record for people, accounts, students, courses,
+      privileges and workgroups, exposed as six MaIS web services.
+    surfaces: [MaIS Registry APIs]
+    method: searched
+    evidence: 'https://uit.stanford.edu/service/registry — status 200'
+  - term: workgroup
+    definition: Stanford's campus-wide group construct, and the unit of access control for the AI Playground.
+    surfaces: [MaIS Registry APIs, AI Playground]
+    method: searched
+  - term: PTA
+    definition: >-
+      Project-Task-Award — Stanford's internal billing string. Required to obtain an AI API
+      Gateway key, which makes the gateway the one Stanford API with a real chargeback model.
+    surfaces: [AI API Gateway]
+    method: searched
+  - term: High Risk data
+    definition: >-
+      Stanford's data risk classification tier. Determines which AI services may process which
+      data; the AI API Gateway is approved for High Risk and PHI, the AI Playground for High
+      Risk non-PHI only.
+    method: searched
+    evidence: 'https://uit.stanford.edu/guide/riskclassifications#security-approved-services'
+  - term: ExploreCourses view
+    definition: >-
+      A dated response-format selector on the Registrar's course query — `view=xml-20140630`.
+      Functions as the API version.
+    surfaces: [ExploreCourses]
+    method: probed
+  - term: CAP
+    definition: >-
+      Community Academic Profiles — Stanford's faculty/researcher profile directory and the
+      source behind profiles.stanford.edu.
+    surfaces: [CAP / Stanford Profiles API]
+    method: searched
