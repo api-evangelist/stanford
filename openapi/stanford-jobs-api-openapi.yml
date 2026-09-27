@@ -97,13 +97,6 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
     BackgroundJobResultResponse:
       type: object
       properties:
@@ -116,6 +109,13 @@ components:
           - pending
           - processing
           - complete
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
     Error_2:
       type: object
       properties:

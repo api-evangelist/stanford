@@ -171,7 +171,7 @@ paths:
       - Tags
       summary: Update one administrative tag
       description: ''
-      operationId: administrative_tags#update (PUT)
+      operationId: administrative_tags#update(PUT)
       responses:
         '204':
           description: Updated
@@ -217,12 +217,14 @@ paths:
               properties:
                 administrative_tag:
                   $ref: '#/components/schemas/AdministrativeTag'
+      x-operation-id-source: normalized
+      x-operation-id-original: administrative_tags#update (PUT)
     patch:
       tags:
       - Tags
       summary: Update one administrative tag
       description: ''
-      operationId: administrative_tags#update (PATCH)
+      operationId: administrative_tags#update(PATCH)
       responses:
         '204':
           description: Updated
@@ -260,12 +262,10 @@ paths:
               properties:
                 administrative_tag:
                   $ref: '#/components/schemas/AdministrativeTag'
+      x-operation-id-source: normalized
+      x-operation-id-original: administrative_tags#update (PATCH)
 components:
   schemas:
-    AdministrativeTagEscaped:
-      type: string
-      pattern: ^.+(\+(?:%3A|:)\+.+)+$
-      example: Foo+%3A+Bar+%3A+Baz
     Error:
       type: object
       properties:
@@ -289,6 +289,14 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
+    AdministrativeTagEscaped:
+      type: string
+      pattern: ^.+(\+(?:%3A|:)\+.+)+$
+      example: Foo+%3A+Bar+%3A+Baz
+    AdministrativeTag:
+      type: string
+      pattern: '^.+( : .+)+$'
+      example: 'Foo : Bar : Baz'
     ErrorResponse:
       type: object
       properties:
@@ -296,10 +304,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Error'
-    AdministrativeTag:
-      type: string
-      pattern: '^.+( : .+)+$'
-      example: 'Foo : Bar : Baz'
   securitySchemes:
     bearerAuth:
       type: http

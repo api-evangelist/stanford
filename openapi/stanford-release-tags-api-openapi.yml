@@ -114,13 +114,6 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
     ReleaseTag:
       description: A tag that indicates the item or collection should be released.
       type: object
@@ -158,6 +151,13 @@ components:
       - low
       - high
       default: default
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     bearerAuth:
       type: http

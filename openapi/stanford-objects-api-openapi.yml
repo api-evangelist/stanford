@@ -1025,7 +1025,7 @@ paths:
       - Objects
       summary: Creates a new object
       description: Does registration and accessioning of the object
-      operationId: objects#create
+      operationId: postV1Resources
       responses:
         '200':
           description: OK
@@ -1075,6 +1075,8 @@ paths:
               oneOf:
               - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/RequestDRO
               - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/RequestCollection
+      x-operation-id-source: normalized
+      x-operation-id-original: objects#create
     servers:
     - url: https://sdr-api-{env}.stanford.edu
       description: Production service
@@ -1133,7 +1135,7 @@ paths:
       - Objects
       summary: Update an existing object
       description: Does update and re-accessioning of the object
-      operationId: objects#update
+      operationId: putV1ResourcesById
       responses:
         '200':
           description: OK
@@ -1182,6 +1184,8 @@ paths:
               - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/DRO
               - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Collection
               - $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/AdminPolicy
+      x-operation-id-source: normalized
+      x-operation-id-original: objects#update
     servers:
     - url: https://sdr-api-{env}.stanford.edu
       description: Production service
@@ -1195,18 +1199,6 @@ paths:
           default: stage
 components:
   schemas:
-    VirtualObjectRequest:
-      type: object
-      required:
-      - virtual_object_id
-      - constituent_ids
-      properties:
-        virtual_object_id:
-          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
-        constituent_ids:
-          type: array
-          items:
-            $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
     Error:
       type: object
       properties:
@@ -1230,13 +1222,18 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
-    ErrorResponse:
+    VirtualObjectRequest:
       type: object
+      required:
+      - virtual_object_id
+      - constituent_ids
       properties:
-        errors:
+        virtual_object_id:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+        constituent_ids:
           type: array
           items:
-            $ref: '#/components/schemas/Error'
+            $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
     LaneId:
       description: Lane for prioritizing the work
       type: string
@@ -1245,11 +1242,13 @@ components:
       - low
       - high
       default: default
-    Druid:
-      description: Digital Repository Unique Identifier (bare or prefixed)
-      type: string
-      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}$
-      example: druid:bc123df4567
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
     PreservedObject:
       description: A preserved object instance
       type: object
@@ -1266,11 +1265,6 @@ components:
       - druid
       - current_version
       - ok_on_local_storage
-    DruidWithOptionalFormat:
-      description: Digital Repository Unique Identifier (bare or prefixed), with a file extension
-      type: string
-      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}(\.json)?$
-      example: druid:bc123df4567.json
     ContentDiff:
       description: A diff between given and existing content metadata (XML)
       type: object
@@ -1347,6 +1341,11 @@ components:
       - basis
       - other
       - report_datetime
+    DruidWithOptionalFormat:
+      description: Digital Repository Unique Identifier (bare or prefixed), with a file extension
+      type: string
+      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}(\.json)?$
+      example: druid:bc123df4567.json
     ChecksumsForObject:
       description: A representation of all files and checksums for a single object
       type: array
@@ -1374,6 +1373,11 @@ components:
         - sha1
         - sha256
         - filesize
+    Druid:
+      description: Digital Repository Unique Identifier (bare or prefixed)
+      type: string
+      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}$
+      example: druid:bc123df4567
     Error_2:
       type: object
       properties:
