@@ -535,22 +535,6 @@ paths:
                   $ref: '#/components/schemas/VersionStatus'
 components:
   schemas:
-    Version:
-      type: object
-      description: 'Similar to the version inventory specified by OCFL: https://ocfl.io/draft/spec/#version-inventory'
-      properties:
-        versionId:
-          type: integer
-          description: the number of the version
-        tag:
-          type: string
-          description: the number of the version
-        message:
-          type: string
-          description: a message that explains what changed
-        cocina:
-          type: boolean
-          description: whether the version has cocina data. (Legacy versions may not have cocina data.)
     VersionStatus:
       type: object
       required:
@@ -584,36 +568,22 @@ components:
         versionDescription:
           type: string
           description: a message that explains what changed
-    UserVersion:
-      type: object
-      description: Information about a user version.
-      properties:
-        version:
-          type: integer
-          description: the number of the object version
-        userVersion:
-          type: integer
-          description: the number of the user version
-        withdrawn:
-          type: boolean
-          description: whether the user version is withdrawn
-        withdrawable:
-          type: boolean
-          description: whether the user version can be withdrawn
-        restorable:
-          type: boolean
-          description: whether the user version can be restored
-        head:
-          type: boolean
-          description: whether the user version is the head
-    VersionLog:
+    Version:
       type: object
       description: 'Similar to the version inventory specified by OCFL: https://ocfl.io/draft/spec/#version-inventory'
       properties:
-        versions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Version'
+        versionId:
+          type: integer
+          description: the number of the version
+        tag:
+          type: string
+          description: the number of the version
+        message:
+          type: string
+          description: a message that explains what changed
+        cocina:
+          type: boolean
+          description: whether the version has cocina data. (Legacy versions may not have cocina data.)
     Error:
       type: object
       properties:
@@ -637,13 +607,28 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
-    ErrorResponse:
+    UserVersion:
       type: object
+      description: Information about a user version.
       properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
+        version:
+          type: integer
+          description: the number of the object version
+        userVersion:
+          type: integer
+          description: the number of the user version
+        withdrawn:
+          type: boolean
+          description: whether the user version is withdrawn
+        withdrawable:
+          type: boolean
+          description: whether the user version can be withdrawn
+        restorable:
+          type: boolean
+          description: whether the user version can be restored
+        head:
+          type: boolean
+          description: whether the user version is the head
     UserVersionLog:
       type: object
       description: User versions for an object.
@@ -652,6 +637,21 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserVersion'
+    VersionLog:
+      type: object
+      description: 'Similar to the version inventory specified by OCFL: https://ocfl.io/draft/spec/#version-inventory'
+      properties:
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Version'
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
     LaneId:
       description: Lane for prioritizing the work
       type: string

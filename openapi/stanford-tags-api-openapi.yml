@@ -289,14 +289,14 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
-    AdministrativeTagEscaped:
-      type: string
-      pattern: ^.+(\+(?:%3A|:)\+.+)+$
-      example: Foo+%3A+Bar+%3A+Baz
     AdministrativeTag:
       type: string
       pattern: '^.+( : .+)+$'
       example: 'Foo : Bar : Baz'
+    AdministrativeTagEscaped:
+      type: string
+      pattern: ^.+(\+(?:%3A|:)\+.+)+$
+      example: Foo+%3A+Bar+%3A+Baz
     ErrorResponse:
       type: object
       properties:

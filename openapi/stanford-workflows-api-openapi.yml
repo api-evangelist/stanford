@@ -325,14 +325,13 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
-    LaneId:
-      description: Lane for prioritizing the work
-      type: string
-      enum:
-      - default
-      - low
-      - high
-      default: default
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
     WorkflowProcessStatus:
       type: string
       enum:
@@ -343,13 +342,14 @@ components:
       - skipped
       - started
       - retrying
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
+    LaneId:
+      description: Lane for prioritizing the work
+      type: string
+      enum:
+      - default
+      - low
+      - high
+      default: default
   securitySchemes:
     bearerAuth:
       type: http

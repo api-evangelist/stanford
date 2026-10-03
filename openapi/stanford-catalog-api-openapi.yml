@@ -110,50 +110,7 @@ paths:
       operationId: patchV1CatalogByDruid
       x-operation-id-source: derived
 components:
-  requestBodies:
-    CatalogOptionsWithDruid:
-      description: Common options (plus druid) for PUT/POST/PATCH operations to the catalog controller
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CatalogOptionsWithDruid'
-        application/x-www-form-urlencoded:
-          schema:
-            $ref: '#/components/schemas/CatalogOptionsWithDruid'
-    CatalogOptions:
-      description: Common options for PUT/POST/PATCH operations to the catalog controller
-      required: true
-      content:
-        application/x-www-form-urlencoded:
-          schema:
-            $ref: '#/components/schemas/CatalogOptions'
-        application/json:
-          schema:
-            $ref: '#/components/schemas/CatalogOptions'
   schemas:
-    CatalogOptionsWithDruid:
-      allOf:
-      - $ref: '#/components/schemas/CatalogOptions'
-      - type: object
-        properties:
-          druid:
-            $ref: '#/components/schemas/Druid'
-        required:
-        - druid
-    AuditResultsResponse:
-      description: Audit results response
-      type: object
-      properties:
-        druid:
-          $ref: '#/components/schemas/Druid'
-        result_array:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuditResult'
-      required:
-      - druid
-      - result_array
     CatalogOptions:
       description: Options for catalog controller endpoint
       type: object
@@ -189,11 +146,54 @@ components:
     AuditResult:
       description: A single audit result
       type: object
+    AuditResultsResponse:
+      description: Audit results response
+      type: object
+      properties:
+        druid:
+          $ref: '#/components/schemas/Druid'
+        result_array:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditResult'
+      required:
+      - druid
+      - result_array
     Druid:
       description: Digital Repository Unique Identifier (bare or prefixed)
       type: string
       pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}$
       example: druid:bc123df4567
+    CatalogOptionsWithDruid:
+      allOf:
+      - $ref: '#/components/schemas/CatalogOptions'
+      - type: object
+        properties:
+          druid:
+            $ref: '#/components/schemas/Druid'
+        required:
+        - druid
+  requestBodies:
+    CatalogOptionsWithDruid:
+      description: Common options (plus druid) for PUT/POST/PATCH operations to the catalog controller
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CatalogOptionsWithDruid'
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: '#/components/schemas/CatalogOptionsWithDruid'
+    CatalogOptions:
+      description: Common options for PUT/POST/PATCH operations to the catalog controller
+      required: true
+      content:
+        application/x-www-form-urlencoded:
+          schema:
+            $ref: '#/components/schemas/CatalogOptions'
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CatalogOptions'
   securitySchemes:
     bearerAuth:
       type: http

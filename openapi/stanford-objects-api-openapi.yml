@@ -1222,6 +1222,13 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
     VirtualObjectRequest:
       type: object
       required:
@@ -1242,13 +1249,11 @@ components:
       - low
       - high
       default: default
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
+    DruidWithOptionalFormat:
+      description: Digital Repository Unique Identifier (bare or prefixed), with a file extension
+      type: string
+      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}(\.json)?$
+      example: druid:bc123df4567.json
     PreservedObject:
       description: A preserved object instance
       type: object
@@ -1265,6 +1270,38 @@ components:
       - druid
       - current_version
       - ok_on_local_storage
+    ChecksumsForObject:
+      description: A representation of all files and checksums for a single object
+      type: array
+      items:
+        type: object
+        properties:
+          filename:
+            type: string
+            example: eric-smith-dissertation.pdf
+          md5:
+            type: string
+            example: aead2f6f734355c59af2d5b2689e4fb3
+          sha1:
+            type: string
+            example: 22dc6464e25dc9a7d600b1de6e3848bf63970595
+          sha256:
+            type: string
+            example: e49957d53fb2a46e3652f4d399bd14d019600cf496b98d11ebcdf2d10a8ffd2f
+          filesize:
+            type: integer
+            example: 1000217
+        required:
+        - filename
+        - md5
+        - sha1
+        - sha256
+        - filesize
+    Druid:
+      description: Digital Repository Unique Identifier (bare or prefixed)
+      type: string
+      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}$
+      example: druid:bc123df4567
     ContentDiff:
       description: A diff between given and existing content metadata (XML)
       type: object
@@ -1341,43 +1378,6 @@ components:
       - basis
       - other
       - report_datetime
-    DruidWithOptionalFormat:
-      description: Digital Repository Unique Identifier (bare or prefixed), with a file extension
-      type: string
-      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}(\.json)?$
-      example: druid:bc123df4567.json
-    ChecksumsForObject:
-      description: A representation of all files and checksums for a single object
-      type: array
-      items:
-        type: object
-        properties:
-          filename:
-            type: string
-            example: eric-smith-dissertation.pdf
-          md5:
-            type: string
-            example: aead2f6f734355c59af2d5b2689e4fb3
-          sha1:
-            type: string
-            example: 22dc6464e25dc9a7d600b1de6e3848bf63970595
-          sha256:
-            type: string
-            example: e49957d53fb2a46e3652f4d399bd14d019600cf496b98d11ebcdf2d10a8ffd2f
-          filesize:
-            type: integer
-            example: 1000217
-        required:
-        - filename
-        - md5
-        - sha1
-        - sha256
-        - filesize
-    Druid:
-      description: Digital Repository Unique Identifier (bare or prefixed)
-      type: string
-      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}$
-      example: druid:bc123df4567
     Error_2:
       type: object
       properties:
