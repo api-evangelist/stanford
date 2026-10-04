@@ -1199,6 +1199,18 @@ paths:
           default: stage
 components:
   schemas:
+    VirtualObjectRequest:
+      type: object
+      required:
+      - virtual_object_id
+      - constituent_ids
+      properties:
+        virtual_object_id:
+          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
+        constituent_ids:
+          type: array
+          items:
+            $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
     Error:
       type: object
       properties:
@@ -1229,18 +1241,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Error'
-    VirtualObjectRequest:
-      type: object
-      required:
-      - virtual_object_id
-      - constituent_ids
-      properties:
-        virtual_object_id:
-          $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
-        constituent_ids:
-          type: array
-          items:
-            $ref: https://raw.githubusercontent.com/sul-dlss/cocina-models/refs/tags/v0.113.0/schema.json#/$defs/Druid
     LaneId:
       description: Lane for prioritizing the work
       type: string
@@ -1249,11 +1249,6 @@ components:
       - low
       - high
       default: default
-    DruidWithOptionalFormat:
-      description: Digital Repository Unique Identifier (bare or prefixed), with a file extension
-      type: string
-      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}(\.json)?$
-      example: druid:bc123df4567.json
     PreservedObject:
       description: A preserved object instance
       type: object
@@ -1378,6 +1373,19 @@ components:
       - basis
       - other
       - report_datetime
+    DruidWithOptionalFormat:
+      description: Digital Repository Unique Identifier (bare or prefixed), with a file extension
+      type: string
+      pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}(\.json)?$
+      example: druid:bc123df4567.json
+    CreateObjectResponse:
+      type: object
+      properties:
+        jobId:
+          type: string
+          description: id for the background job that is processing the create object request
+      required:
+      - jobId
     Error_2:
       type: object
       properties:
@@ -1395,14 +1403,6 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
-    CreateObjectResponse:
-      type: object
-      properties:
-        jobId:
-          type: string
-          description: id for the background job that is processing the create object request
-      required:
-      - jobId
   securitySchemes:
     bearerAuth:
       type: http

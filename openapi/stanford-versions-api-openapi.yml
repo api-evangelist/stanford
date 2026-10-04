@@ -535,6 +535,44 @@ paths:
                   $ref: '#/components/schemas/VersionStatus'
 components:
   schemas:
+    UserVersion:
+      type: object
+      description: Information about a user version.
+      properties:
+        version:
+          type: integer
+          description: the number of the object version
+        userVersion:
+          type: integer
+          description: the number of the user version
+        withdrawn:
+          type: boolean
+          description: whether the user version is withdrawn
+        withdrawable:
+          type: boolean
+          description: whether the user version can be withdrawn
+        restorable:
+          type: boolean
+          description: whether the user version can be restored
+        head:
+          type: boolean
+          description: whether the user version is the head
+    UserVersionLog:
+      type: object
+      description: User versions for an object.
+      properties:
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserVersion'
+    VersionLog:
+      type: object
+      description: 'Similar to the version inventory specified by OCFL: https://ocfl.io/draft/spec/#version-inventory'
+      properties:
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Version'
     VersionStatus:
       type: object
       required:
@@ -584,6 +622,13 @@ components:
         cocina:
           type: boolean
           description: whether the version has cocina data. (Legacy versions may not have cocina data.)
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
     Error:
       type: object
       properties:
@@ -607,51 +652,6 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
-    UserVersion:
-      type: object
-      description: Information about a user version.
-      properties:
-        version:
-          type: integer
-          description: the number of the object version
-        userVersion:
-          type: integer
-          description: the number of the user version
-        withdrawn:
-          type: boolean
-          description: whether the user version is withdrawn
-        withdrawable:
-          type: boolean
-          description: whether the user version can be withdrawn
-        restorable:
-          type: boolean
-          description: whether the user version can be restored
-        head:
-          type: boolean
-          description: whether the user version is the head
-    UserVersionLog:
-      type: object
-      description: User versions for an object.
-      properties:
-        versions:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserVersion'
-    VersionLog:
-      type: object
-      description: 'Similar to the version inventory specified by OCFL: https://ocfl.io/draft/spec/#version-inventory'
-      properties:
-        versions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Version'
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
     LaneId:
       description: Lane for prioritizing the work
       type: string

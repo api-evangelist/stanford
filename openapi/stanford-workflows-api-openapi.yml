@@ -325,13 +325,6 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
-    ErrorResponse:
-      type: object
-      properties:
-        errors:
-          type: array
-          items:
-            $ref: '#/components/schemas/Error'
     WorkflowProcessStatus:
       type: string
       enum:
@@ -350,6 +343,13 @@ components:
       - low
       - high
       default: default
+    ErrorResponse:
+      type: object
+      properties:
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     bearerAuth:
       type: http
