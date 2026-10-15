@@ -1,0 +1,84 @@
+edges:
+- partner_name: eduGAIN
+  partner: null
+  type: register
+  channel: standard-directory
+  relationship: network-participant
+  direction: partner-built
+  evidence: https://technical.edugain.org/api.php?action=list_entities&type=idp&format=json
+  category: research and education identity federation
+  contract_reference:
+    network: eduGAIN (GÉANT interfederation)
+    spec_file: null
+    roles:
+    - identity-provider
+    - service-provider
+    role: identity-and-service-provider
+    federations:
+    - INCOMMON
+    matched_by: domain:stanford.edu
+    entities:
+    - entity_id: urn:mace:incommon:stanford.edu
+      role: identity-provider
+      federation: INCOMMON
+      display_name: Stanford University
+      entity_categories:
+      - '11'
+      - '43'
+      - '76'
+      sirtfi: true
+      coco: false
+    - entity_id: https://relyingirb.stanford.edu/
+      role: service-provider
+      federation: INCOMMON
+      display_name: Stanford University
+      entity_categories:
+      - '43'
+      - '76'
+      sirtfi: true
+      coco: true
+    - entity_id: https://relyingirbdev.stanford.edu/
+      role: service-provider
+      federation: INCOMMON
+      display_name: Stanford University
+      entity_categories:
+      - '43'
+      - '76'
+      sirtfi: true
+      coco: true
+    - entity_id: https://relyingirbuat.stanford.edu/
+      role: service-provider
+      federation: INCOMMON
+      display_name: Stanford University
+      entity_categories:
+      - '43'
+      - '76'
+      sirtfi: true
+      coco: true
+    - entity_id: https://sgp-data.stanford.edu/sp
+      role: service-provider
+      federation: INCOMMON
+      display_name: Stanford University
+      entity_categories:
+      - '43'
+      - '76'
+      sirtfi: true
+      coco: true
+    - entity_id: https://turnitin.stanford.edu/shibboleth
+      role: service-provider
+      federation: INCOMMON
+      display_name: Stanford University
+      entity_categories:
+      - '43'
+      - '76'
+      sirtfi: true
+      coco: true
+    detected_by: sweep-higher-ed.py
+    detected: '2026-10-15'
+  detected_by: sweep-higher-ed.py
+  first_seen: '2026-10-15'
+generated: '2026-10-15'
+method: searched
+checked:
+- https://technical.edugain.org/api.php?action=list_entities&type=idp&format=json
+- https://technical.edugain.org/api.php?action=list_entities&type=sp&format=json
