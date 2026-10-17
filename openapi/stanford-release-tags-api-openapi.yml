@@ -91,6 +91,14 @@ paths:
               $ref: '#/components/schemas/ReleaseTag'
 components:
   schemas:
+    LaneId:
+      description: Lane for prioritizing the work
+      type: string
+      enum:
+      - default
+      - low
+      - high
+      default: default
     Error:
       type: object
       properties:
@@ -114,14 +122,6 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
-    LaneId:
-      description: Lane for prioritizing the work
-      type: string
-      enum:
-      - default
-      - low
-      - high
-      default: default
     ReleaseTag:
       description: A tag that indicates the item or collection should be released.
       type: object

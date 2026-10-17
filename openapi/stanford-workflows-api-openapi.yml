@@ -302,6 +302,24 @@ paths:
               - status
 components:
   schemas:
+    LaneId:
+      description: Lane for prioritizing the work
+      type: string
+      enum:
+      - default
+      - low
+      - high
+      default: default
+    WorkflowProcessStatus:
+      type: string
+      enum:
+      - waiting
+      - completed
+      - error
+      - queued
+      - skipped
+      - started
+      - retrying
     Error:
       type: object
       properties:
@@ -325,24 +343,6 @@ components:
             pointer:
               type: string
               example: /data/attributes/title
-    WorkflowProcessStatus:
-      type: string
-      enum:
-      - waiting
-      - completed
-      - error
-      - queued
-      - skipped
-      - started
-      - retrying
-    LaneId:
-      description: Lane for prioritizing the work
-      type: string
-      enum:
-      - default
-      - low
-      - high
-      default: default
     ErrorResponse:
       type: object
       properties:

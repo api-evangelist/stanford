@@ -1199,6 +1199,14 @@ paths:
           default: stage
 components:
   schemas:
+    LaneId:
+      description: Lane for prioritizing the work
+      type: string
+      enum:
+      - default
+      - low
+      - high
+      default: default
     VirtualObjectRequest:
       type: object
       required:
@@ -1241,30 +1249,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Error'
-    LaneId:
-      description: Lane for prioritizing the work
-      type: string
-      enum:
-      - default
-      - low
-      - high
-      default: default
-    PreservedObject:
-      description: A preserved object instance
-      type: object
-      properties:
-        druid:
-          $ref: '#/components/schemas/Druid'
-        current_version:
-          type: integer
-          example: 13
-        ok_on_local_storage:
-          description: True if the files for the object on local storage (as represented by the  MoabRecord) are not in an error state
-          type: boolean
-      required:
-      - druid
-      - current_version
-      - ok_on_local_storage
     ChecksumsForObject:
       description: A representation of all files and checksums for a single object
       type: array
@@ -1378,6 +1362,22 @@ components:
       type: string
       pattern: ^(druid:)?[b-df-hjkmnp-tv-z]{2}[0-9]{3}[b-df-hjkmnp-tv-z]{2}[0-9]{4}(\.json)?$
       example: druid:bc123df4567.json
+    PreservedObject:
+      description: A preserved object instance
+      type: object
+      properties:
+        druid:
+          $ref: '#/components/schemas/Druid'
+        current_version:
+          type: integer
+          example: 13
+        ok_on_local_storage:
+          description: True if the files for the object on local storage (as represented by the  MoabRecord) are not in an error state
+          type: boolean
+      required:
+      - druid
+      - current_version
+      - ok_on_local_storage
     CreateObjectResponse:
       type: object
       properties:

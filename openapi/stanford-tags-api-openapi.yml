@@ -266,6 +266,10 @@ paths:
       x-operation-id-original: administrative_tags#update (PATCH)
 components:
   schemas:
+    AdministrativeTagEscaped:
+      type: string
+      pattern: ^.+(\+(?:%3A|:)\+.+)+$
+      example: Foo+%3A+Bar+%3A+Baz
     Error:
       type: object
       properties:
@@ -293,10 +297,6 @@ components:
       type: string
       pattern: '^.+( : .+)+$'
       example: 'Foo : Bar : Baz'
-    AdministrativeTagEscaped:
-      type: string
-      pattern: ^.+(\+(?:%3A|:)\+.+)+$
-      example: Foo+%3A+Bar+%3A+Baz
     ErrorResponse:
       type: object
       properties:
