@@ -82,3 +82,27 @@
     detected: '2026-10-15'
   status: not-a-workflow
   arazzo: null
+- slug: stanford-iiif-consortium
+  label: IIIF Consortium
+  partner_name: IIIF Consortium
+  category: image interoperability standards consortium membership
+  type: register
+  channel: standard-directory
+  evidence: https://iiif.io/community/consortium/members/#champion-members
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: IIIF Consortium members (iiif.io/community/consortium/members/)
+    standard: IIIF (International Image Interoperability Framework)
+    spec_file: null
+    role: iiif-consortium-member
+    registered_name: Stanford University
+    register_id: http://library.stanford.edu/
+    matched_domain: stanford.edu
+    matched_by: domain
+    signal_note: 'participation only: consortium membership funds and governs the IIIF APIs; the level is partner_tier,
+      never counted; membership is not conformance'
+    detected_by: sweep-iiif-cultural-heritage.py
+    detected: '2026-10-21'
+  status: not-a-workflow
+  arazzo: null

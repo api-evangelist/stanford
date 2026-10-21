@@ -77,8 +77,42 @@ edges:
     detected: '2026-10-15'
   detected_by: sweep-higher-ed.py
   first_seen: '2026-10-15'
+- partner_name: IIIF Consortium
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://iiif.io/community/consortium/members/#champion-members
+  category: image interoperability standards consortium membership
+  partner_tier: champion
+  contract_reference:
+    register: IIIF Consortium members (iiif.io/community/consortium/members/)
+    standard: IIIF (International Image Interoperability Framework)
+    spec_file: null
+    role: iiif-consortium-member
+    registered_name: Stanford University
+    register_id: http://library.stanford.edu/
+    matched_domain: stanford.edu
+    matched_by: domain
+    signal_note: 'participation only: consortium membership funds and governs the IIIF APIs; the level is partner_tier,
+      never counted; membership is not conformance'
+    detected_by: sweep-iiif-cultural-heritage.py
+    detected: '2026-10-21'
+  detected_by: sweep-iiif-cultural-heritage.py
+  first_seen: '2026-10-21'
 generated: '2026-10-15'
 method: searched
 checked:
 - https://technical.edugain.org/api.php?action=list_entities&type=idp&format=json
 - https://technical.edugain.org/api.php?action=list_entities&type=sp&format=json
+- https://github.com/IIIF/awesome-iiif/blob/main/implementations.md
+- https://github.com/IIIF/awesome-iiif/blob/main/readme.md
+- https://iiif.io/community/consortium/members/
+- https://linked.art/community/
+source:
+- https://iiif.io/community/consortium/members/
+- https://github.com/IIIF/awesome-iiif/blob/main/readme.md
+- https://github.com/IIIF/awesome-iiif/blob/main/implementations.md
+- https://linked.art/community/
